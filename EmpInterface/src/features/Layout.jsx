@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Sidebar from "../components/AdminComponents/SideBar";
-import Header from "../components/AdminComponents/header";
+import Header from "../components/AdminComponents/Header";
 
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -11,12 +11,15 @@ const Layout = ({ children }) => {
 
   return (
     <div className="flex h-screen overflow-hidden w-full">
-      {/* Sidebar */}
+      {/* Overlay */}
       <div
-        className={`fixed inset-0 bg-black bg-opacity-50 z-10 ${isSidebarOpen ? "block" : "hidden"}`}
+        className={`fixed inset-0 z-10 ${
+          isSidebarOpen ? "block" : "hidden"
+        }`}
         onClick={toggleSidebar}
       ></div>
 
+      {/* Sidebar */}
       <div
         className={`${
           isSidebarOpen ? "w-64" : "w-0"
@@ -32,10 +35,10 @@ const Layout = ({ children }) => {
         }`}
       >
         {/* Header */}
-        <Header toggleSidebar={toggleSidebar} />
+        <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
 
         {/* Content Section */}
-        <div className="flex-grow p-6 bg-gray-50 overflow-auto w-full">
+        <div className="flex-grow p-6 bg-gray-100 overflow-auto w-full">
           {children}
         </div>
       </div>

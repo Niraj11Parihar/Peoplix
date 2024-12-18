@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { FaBars} from "react-icons/fa";
+import { FaArrowRight, FaBars} from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../../assets/logo/logo.png"
 
-const Header = ({ toggleSidebar }) => {
+const Header = ({ toggleSidebar, isSidebarOpen }) => {
   const [profileImage, setProfileImage] = useState(""); 
   const [userName, setUserName] = useState(""); 
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ const Header = ({ toggleSidebar }) => {
           return;
         }
 
-        const response = await axios.get("http://localhost:8081/admin/profile", {
+        const response = await axios.get("http://localhost:8082/admin/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -48,7 +48,11 @@ const Header = ({ toggleSidebar }) => {
         className="text-dark p-4"
         onClick={toggleSidebar} // Toggle sidebar visibility
       >
-        <FaBars className="text-2xl" />
+        {isSidebarOpen ? 
+          <FaArrowRight className="text-2xl" /> 
+        : 
+          <FaBars className="text-2xl" />
+        }
       </button>
      </div>
 

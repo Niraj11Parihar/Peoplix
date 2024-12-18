@@ -30,7 +30,7 @@
     const fetchEmployees = useCallback(async () => {
       try {
         const token = localStorage.getItem("authToken");
-        const response = await axios.get("http://localhost:8081/Emp/getEmployees", {
+        const response = await axios.get("http://localhost:8082/Emp/getEmployees", {
           headers: { Authorization: "Bearer " + token },
         });
 
@@ -103,7 +103,7 @@
         if (selectedEmployee) {
           // Update Employee
           await axios.patch(
-            `http://localhost:8081/Emp/employees/${selectedEmployee._id}`,
+            `http://localhost:8082/Emp/employees/${selectedEmployee._id}`,
             formData, // Ensure joiningDate is included in the formData
             {
               headers: { Authorization: `Bearer ${token}` },
@@ -112,7 +112,7 @@
           toast.success("Employee updated successfully!");
         } else {
           // Add New Employee
-          await axios.post("http://localhost:8081/Emp/addEmployees", formData, {
+          await axios.post("http://localhost:8082/Emp/addEmployees", formData, {
             headers: { Authorization: `Bearer ${token}` },
           });
           toast.success("New employee added successfully!");
@@ -136,7 +136,7 @@
                 try {
                   const token = localStorage.getItem("authToken");
                   await axios.delete(
-                    `http://localhost:8081/Emp/employees/${employeeId}`,
+                    `http://localhost:8082/Emp/employees/${employeeId}`,
                     {
                       headers: { Authorization: `Bearer ${token}` },
                     }

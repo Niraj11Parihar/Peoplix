@@ -3,9 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import FirstRegistrationPage from './features/registration-1';
 import LoginPage from './features/login';
 import AdminPanel from './components/Admin/AdminPanel';
-import EmployeeTable from './components/emp/EmpDashboard';
 import Profile from './components/AdminComponents/Profile';
 import SecondRegistrationPage from './features/registration-2';
+import EmployeeTable from './components/AdminComponents/EmpDashboard';
+import AttendanceTodo from './components/AdminComponents/TakeAttendance';
+// import AttendanceSheet from './components/AdminComponents/AttendanceSheet';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path='/' element={<AdminPanel/>} />
           <Route path="/profile" element={<Profile />} />
           <Route path='/EmpDashboard' element={<EmployeeTable/>} />
+          <Route path='/Attendance' element={<AttendanceTodo/>} />
+          {/* <Route path='/Attendance' element={<AttendanceSheet/>} /> */}
         </Routes>
       </div>
     </Router>

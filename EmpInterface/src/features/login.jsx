@@ -24,7 +24,7 @@ function LoginPage() {
     try {
       // Send login request
       const response = await axios.post(
-        "http://localhost:8081/auth/login",
+        "http://localhost:8082/auth/login",
         formData
       );
       const { token, message, user } = response.data;

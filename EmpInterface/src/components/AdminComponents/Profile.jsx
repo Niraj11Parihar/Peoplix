@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "../AdminComponents/SideBar";
-import Header from "../AdminComponents/header";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Layout from "../../features/Layout";
@@ -32,7 +30,7 @@ const Profile = () => {
 
         // If token is found, make the request to get profile data
         const response = await axios.get(
-          "http://localhost:8081/admin/profile",
+          "http://localhost:8082/admin/profile",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -67,7 +65,7 @@ const Profile = () => {
     try {
       const token = localStorage.getItem("authToken");
       await axios.patch(
-        "http://localhost:8081/admin/updateProfile",
+        "http://localhost:8082/admin/updateProfile",
         { ...userData },
         {
           headers: {

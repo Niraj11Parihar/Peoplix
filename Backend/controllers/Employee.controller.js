@@ -1,4 +1,5 @@
 const EmpModel = require('../model/Emp.model');
+const EmpAttendenceModel = require('../model/EmpAttendence.model');
 
 // Add a new employee
 const addEmployee = async (req, res) => {
@@ -106,9 +107,27 @@ const deleteEmployee = async (req, res) => {
   }
 };
 
+// Save attendance for employees
+const saveAttendance = async (req, res) => {
+  try {
+    const attendanceRecords = Object.keys(req.body).map((employeeId) => ({
+      employeeId,
+      status: req.body[employeeId],
+    }));
+
+    // Insert attendance records into the database
+    await EmpAttendenceModel.insertMany(attendanceRecords);
+
+    res.status(201).send({ message: "Attendance saved successfully!" });
+  } catch (err) {
+    res.status(500).send({ error: "Error saving attendance" });
+  }
+};
+
 module.exports = {
   addEmployee,
   getEmployees,
   updateEmployee,
   deleteEmployee,
+  saveAttendance
 };
