@@ -36,20 +36,20 @@ const AttendanceTodo = () => {
         "http://localhost:8082/Attendance/postAttendance",
         attendance
       );
-      alert("Attendance saved successfully!");
+      alert("Attendance saved/updated successfully!");
     } catch (err) {
-      console.error("Error saving attendance:", err);
+      console.error("Error saving/updating attendance:", err);
     }
   };
 
   return (
     <Layout>
-      <div class="layout">
-        <h1 class="attendance-title">Employee Attendance</h1>
+      <div className="layout">
+        <h1 className="attendance-title">Employee Attendance</h1>
 
         {/* Attendance marking section */}
-        <div class="table-wrapper">
-          <table class="attendance-table">
+        <div className="table-wrapper">
+          <table className="attendance-table">
             <thead>
               <tr>
                 <th>Employee Name</th>
@@ -65,7 +65,7 @@ const AttendanceTodo = () => {
                       onClick={() =>
                         handleAttendanceChange(employee._id, "Present")
                       }
-                      class={
+                      className={
                         attendance[employee._id] === "Present"
                           ? "button present"
                           : "button"
@@ -77,7 +77,7 @@ const AttendanceTodo = () => {
                       onClick={() =>
                         handleAttendanceChange(employee._id, "Absent")
                       }
-                      class={
+                      className={
                         attendance[employee._id] === "Absent"
                           ? "button absent"
                           : "button"
@@ -85,18 +85,30 @@ const AttendanceTodo = () => {
                     >
                       Absent
                     </button>
+                    <button
+                      onClick={() =>
+                        handleAttendanceChange(employee._id, "Half Day")
+                      }
+                      className={
+                        attendance[employee._id] === "Half Day"
+                          ? "button half-day"
+                          : "button"
+                      }
+                    >
+                      Half Day
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <button class="save-button" onClick={saveAttendance}>
+          <button className="save-button" onClick={saveAttendance}>
             Save Attendance
           </button>
         </div>
       </div>
 
-      <div class="attendance-sheet">
+      <div className="attendance-sheet">
         <AttendanceSheet />
       </div>
     </Layout>

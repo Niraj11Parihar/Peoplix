@@ -1,11 +1,24 @@
 const mongoose = require("mongoose");
 
-const AttendanceSchema = new mongoose.Schema({
-  employeeId: { type: mongoose.Schema.Types.ObjectId, ref: "Employee", required: true },
-  date: { type: Date, default: Date.now },
-  status: { type: String, enum: ["Present", "Absent"], required: true },
+const attendanceSchema = new mongoose.Schema({
+  employeeId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Employee",
+    required: true,
+  },
+  date: {
+    type: String, // Use a formatted string for the date (e.g., YYYY-MM-DD)
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ["Present", "Absent", "Half Day"], // Restrict the status to these values
+    required: true,
+  },
 });
 
-const Attendance = mongoose.model("Attendance", AttendanceSchema);
+// Add a unique compound index to prevent duplicate attendance for the same employee on the same date
+attendanceSchema.index({ employeeId: 1, date: 1 }, { unique: true });
+const Attendance = mongoose.model("Attendance", attendanceSchema);
 
-module.exports = Attendance;
+module.exports = Attendance

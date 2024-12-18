@@ -16,20 +16,24 @@ const getAttendance = async (req, res) => {
 const saveAttendance = async (req, res) => {
   try {
     const attendanceData = req.body; // { employeeId: status }
-    const attendanceEntries = Object.keys(attendanceData).map((id) => ({
-      employeeId: id,
-      date: new Date(), // Default to today
-      status: attendanceData[id],
-    }));
+    const currentDate = new Date().toISOString().split("T")[0]; 
 
-    // Insert or update attendance in the database
-    await  Attendance.insertMany(attendanceEntries);
+    for (const [employeeId, status] of Object.entries(attendanceData)) {
+      // Upsert logic: Update if exists, otherwise insert
+      await Attendance.findOneAndUpdate(
+        { employeeId, date: currentDate },
+        { $set: { status } }, 
+        { upsert: true, new: true }
+      );
+    }
 
-    res.status(200).json({ message: "Attendance saved successfully!" });
+    res.status(200).json({ message: "Attendance saved/updated successfully!" });
   } catch (err) {
-    res.status(500).json({ error: "Error saving attendance" });
+    console.error("Error saving/updating attendance:", err);
+    res.status(500).json({ error: "Error saving/updating attendance" });
   }
 };
+
 
 // Fetch attendance records
 const getAttendanceRecords = async (req, res) => {
