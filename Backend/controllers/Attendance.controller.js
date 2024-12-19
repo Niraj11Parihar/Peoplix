@@ -37,33 +37,39 @@ const saveAttendance = async (req, res) => {
 
 // Fetch attendance records
 const getAttendanceRecords = async (req, res) => {
-    try {
-      const attendanceRecords = await Attendance.aggregate([
-        {
-          $lookup: {
-            from: "employees", // Collection name of employees
-            localField: "employeeId",
-            foreignField: "_id",
-            as: "employeeDetails",
-          },
+  try {
+    // Aggregate pipeline
+    const attendanceRecords = await Attendance.aggregate([
+      {
+        $lookup: {
+          from: "employeetbls", // Use the actual collection name for employees
+          localField: "employeeId",
+          foreignField: "_id",
+          as: "employeeDetails",
         },
-        {
-          $unwind: "$employeeDetails",
+      },
+      {
+        $unwind: "$employeeDetails", // Unwind to flatten the employee details
+      },
+      {
+        $project: {
+          employeeId: 1,
+          "employeeDetails.name": 1, 
+          date: 1,
+          status: 1,
         },
-        {
-          $project: {
-            employeeId: 1,
-            "employeeDetails.name": 1,
-            date: 1,
-            status: 1,
-          },
-        },
-      ]);
-  
-      res.status(200).json(attendanceRecords);
-    } catch (err) {
-      res.status(500).json({ error: "Error fetching attendance records" });
-    }
-  };
+      },
+    ]);
+
+    console.log("Attendance Records using aggregate():", attendanceRecords);
+
+    // Send the aggregated attendance records as response
+    res.status(200).json(attendanceRecords);
+  } catch (err) {
+    console.error("Error fetching attendance records:", err);
+    res.status(500).json({ error: "Error fetching attendance records" });
+  }
+};
+
 
 module.exports = { getAttendance, saveAttendance, getAttendanceRecords };

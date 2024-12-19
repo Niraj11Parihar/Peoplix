@@ -7,7 +7,6 @@
   function EmployeeTable() {
     const [employees, setEmployees] = useState([]);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState({
       name: "",

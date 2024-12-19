@@ -108,8 +108,8 @@ body {
   }
 }
 
-@media (max-width: 315px) {
-  .layout{
-      width:25% ;
+@media (max-width: 320px) {
+  .attendance-container{
+      width:35% ;
   }
 }

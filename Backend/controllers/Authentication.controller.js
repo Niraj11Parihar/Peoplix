@@ -61,12 +61,16 @@ const login = async (req, res) => {
     if (role === "admin") user = await adminModel.findOne({ email });
     else if (role === "employee") user = await EmpModel.findOne({ email });
 
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" }); 
+    } 
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+    const isMatch = bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      console.error("Invalid credentials");
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
 
-    // Create token only if credentials are valid
     const token = jwt.sign({ id: user._id, role }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
     res.json({
@@ -75,9 +79,11 @@ const login = async (req, res) => {
       user: { id: user._id, email: user.email, role },
     });
   } catch (err) {
+    console.error("Login error:", err.message);
     res.status(500).json({ message: "Login error", error: err.message });
   }
 };
+
 
 
 module.exports = { registerAdmin, login };

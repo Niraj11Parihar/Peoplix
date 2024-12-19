@@ -7,6 +7,7 @@ import Profile from './components/AdminComponents/Profile';
 import SecondRegistrationPage from './features/registration-2';
 import EmployeeTable from './components/AdminComponents/EmpDashboard';
 import AttendanceTodo from './components/AdminComponents/TakeAttendance';
+import EmployeeTasks from './components/emp/employee';
 // import AttendanceSheet from './components/AdminComponents/AttendanceSheet';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path='/EmpDashboard' element={<EmployeeTable/>} />
           <Route path='/Attendance' element={<AttendanceTodo/>} />
           {/* <Route path='/Attendance' element={<AttendanceSheet/>} /> */}
+          <Route path='/employee' element={<EmployeeTasks/>} />
         </Routes>
       </div>
     </Router>

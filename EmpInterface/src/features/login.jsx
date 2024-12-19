@@ -22,11 +22,11 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Send login request
       const response = await axios.post(
         "http://localhost:8082/auth/login",
         formData
       );
+
       const { token, message, user } = response.data;
 
       // Store the token in localStorage

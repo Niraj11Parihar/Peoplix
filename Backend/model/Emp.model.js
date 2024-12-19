@@ -11,10 +11,10 @@ const employeeSchema = new mongoose.Schema({
   city: { type: String, required: true },
   country: { type: String, required: true },
   joiningDate: { type: Date, required: true }, // Make sure this is a Date type
+  role: { type: String, default: 'employee' }, 
   adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true }, // Link employee to admin
 });
 
-const Employee = mongoose.model('Employee', employeeSchema);
+const EmpModel = mongoose.model('Employeetbl', employeeSchema);
 
-module.exports = Employee;
-  
+module.exports = EmpModel; 
