@@ -1,75 +1,77 @@
-const Employee = require("../model/Emp.model");
-const Attendance = require("../model/EmpAttendence.model");
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Layout from "../../features/Layout"; 
 
+function AdminPanel() {
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [attendancePercentage, setAttendancePercentage] = useState(0);
 
+  useEffect(() => {
+    // Fetch attendance data from the API using axios
+    const fetchAttendanceData = async () => {
+      try {
+        const response = await axios.get("/api/attendance/getAttendanceRecords");  // Update with your correct API endpoint
+        const records = response.data;
+        setAttendanceData(records);
+        calculateAttendancePercentage(records);
+      } catch (error) {
+        console.error("Error fetching attendance data:", error);
+      }
+    };
 
-const getAttendance = async (req, res) => {
-  try {
-    const employees = await Employee.find().select("_id name");
-    res.status(200).json(employees);
-  } catch (err) {
-    res.status(500).json({ error: "Error fetching employees" });
-  }
-};
+    fetchAttendanceData();
+  }, []);
 
+  // Calculate percentage of employees who are "Present"
+  const calculateAttendancePercentage = (records) => {
+    const totalEmployees = records.length;
+    const presentCount = records.filter(record => record.status === "Present").length;
+    const percentage = (presentCount / totalEmployees) * 100;
+    setAttendancePercentage(percentage.toFixed(2));  // Set percentage with two decimal places
+  };
 
-const saveAttendance = async (req, res) => {
-  try {
-    const attendanceData = req.body; // { employeeId: status }
-    const currentDate = new Date().toISOString().split("T")[0]; 
+  return (
+    <Layout>
+      <div className="px-6 py-4 min-h-screen bg-gradient-to-r from-blue-100 to-blue-300">
+        <h1 className="text-3xl font-bold text-gray-700 mb-6">Welcome to Admin Dashboard</h1>
 
-    for (const [employeeId, status] of Object.entries(attendanceData)) {
-      // Upsert logic: Update if exists, otherwise insert
-      await Attendance.findOneAndUpdate(
-        { employeeId, date: currentDate },
-        { $set: { status } }, 
-        { upsert: true, new: true }
-      );
-    }
+        {/* Grid for Boxes */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Salary Box */}
+          <div className="bg-gradient-to-br from-teal-500 to-cyan-500 shadow-lg rounded-lg p-4 text-center transform transition-transform duration-300 hover:scale-105">
+            <h2 className="text-xl font-semibold text-white">Salary</h2>
+            <p className="text-white text-lg mt-2">$25,000</p>
+          </div>
 
-    res.status(200).json({ message: "Attendance saved/updated successfully!" });
-  } catch (err) {
-    console.error("Error saving/updating attendance:", err);
-    res.status(500).json({ error: "Error saving/updating attendance" });
-  }
-};
+          {/* Attendance Box */}
+          <div className="bg-gradient-to-br from-orange-500 to-yellow-500 shadow-lg rounded-lg p-4 text-center transform transition-transform duration-300 hover:scale-105">
+            <h2 className="text-xl font-semibold text-white">Attendance</h2>
+            <p className="text-white text-lg mt-2">{attendancePercentage}% Present</p>
+          </div>
 
+          {/* Leaves Box */}
+          <div className="bg-gradient-to-br from-red-500 to-pink-500 shadow-lg rounded-lg p-4 text-center transform transition-transform duration-300 hover:scale-105">
+            <h2 className="text-xl font-semibold text-white">Leaves</h2>
+            <p className="text-white text-lg mt-2">3 Days</p>
+          </div>
 
-// Fetch attendance records
-const getAttendanceRecords = async (req, res) => {
-  try {
-    // Aggregate pipeline
-    const attendanceRecords = await Attendance.aggregate([
-      {
-        $lookup: {
-          from: "employeetbls", // Use the actual collection name for employees
-          localField: "employeeId",
-          foreignField: "_id",
-          as: "employeeDetails",
-        },
-      },
-      {
-        $unwind: "$employeeDetails", // Unwind to flatten the employee details
-      },
-      {
-        $project: {
-          employeeId: 1,
-          "employeeDetails.name": 1, 
-          date: 1,
-          status: 1,
-        },
-      },
-    ]);
+          {/* Projects Box */}
+          <div className="bg-gradient-to-br from-blue-500 to-indigo-500 shadow-lg rounded-lg p-4 text-center transform transition-transform duration-300 hover:scale-105">
+            <h2 className="text-xl font-semibold text-white">Projects</h2>
+            <p className="text-white text-lg mt-2">2 Active</p>
+          </div>
+        </div>
 
-    console.log("Attendance Records using aggregate():", attendanceRecords);
+        {/* Main Dashboard Content */}
+        <div className="bg-white shadow-md rounded-lg mt-8 p-6 transform transition-transform duration-300 hover:scale-101">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Employee Management</h2>
+          <p className="text-gray-600">
+            Manage all aspects of your employee data, including salary, attendance, leaves, and more. Explore detailed statistics and insights.
+          </p>
+        </div>
+      </div>
+    </Layout>
+  );
+}
 
-    // Send the aggregated attendance records as response
-    res.status(200).json(attendanceRecords);
-  } catch (err) {
-    console.error("Error fetching attendance records:", err);
-    res.status(500).json({ error: "Error fetching attendance records" });
-  }
-};
-
-
-module.exports = { getAttendance, saveAttendance, getAttendanceRecords };
+export default AdminPanel;
