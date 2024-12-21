@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../../assets/css/attendanceSheet.css"
 
 const AttendanceSheet = () => {
   const [attendanceData, setAttendanceData] = useState([]);
@@ -43,22 +42,22 @@ const AttendanceSheet = () => {
   };
 
   return (
-    <div class="attendance-container">
-    <h1 class="attendance-title">Attendance Sheet</h1>
+    <div className="p-6 rounded-lg shadow-lg bg-gray-100 flex flex-col items-center justify-center">
+    <h1 className="text-3xl font-bold text-gray-800 mb-4 text-center">Attendance Sheet</h1>
   
-    {/* Responsive Table */}
-    <div class="table-wrapper">
-      <table class="responsive-table">
+    {/* Make the table scrollable on small screens */}
+    <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md w-full">
+      <table className="w-full min-w-[800px] border border-gray-300">
         <thead>
           <tr>
-            <th>Employee Name</th>
+            <th className="bg-blue-300 text-gray-800 px-4 py-2 border border-gray-300">Employee Name</th>
             {uniqueDates.map((date, index) => (
-              <th key={index}>
+              <th key={index} className="bg-blue-300 text-gray-800 px-4 py-2 border border-gray-300">
                 {new Date(date).getDate()} <br />
                 {new Date(date).toLocaleString("default", { month: "short" })}
               </th>
             ))}
-            <th>Consistency (%)</th>
+            <th className="bg-blue-300 text-gray-800 px-4 py-2 border border-gray-300">Consistency (%)</th>
           </tr>
         </thead>
         <tbody>
@@ -68,25 +67,25 @@ const AttendanceSheet = () => {
   
             return (
               <tr key={employeeName}>
-                <td>{employeeName}</td>
+                <td className="bg-gray-200 text-gray-800 px-4 py-2 border border-gray-300">{employeeName}</td>
                 {uniqueDates.map((date, index) => {
                   const record = records.find((r) => r.date === date);
                   return (
                     <td
                       key={index}
-                      class={
+                      className={`${
                         record?.status === "Present"
-                          ? "present"
+                          ? "bg-green-200 text-green-700"
                           : record?.status === "Absent"
-                          ? "absent"
-                          : "neutral"
-                      }
+                          ? "bg-red-200 text-red-700"
+                          : "bg-yellow-200 text-yellow-700"
+                      } px-4 py-2 border border-gray-300`}
                     >
                       {record?.status || "-"}
                     </td>
                   );
                 })}
-                <td>{consistency}%</td>
+                <td className="bg-gray-200 text-gray-800 px-4 py-2 border border-gray-300">{consistency}%</td>
               </tr>
             );
           })}
@@ -94,14 +93,11 @@ const AttendanceSheet = () => {
       </table>
     </div>
   
-    <p class="responsive-message">
+    <p className="text-sm text-gray-700 mt-4">
       Swipe left or right to view more columns on smaller screens.
     </p>
   </div>
   
-  
-  
-
   );
 };
 

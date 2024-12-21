@@ -10,12 +10,10 @@ const Layout = ({ children }) => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden w-full">
+    <div className="flex h-screen overflow-hidden w-full bg-gradient-to-r from-blue-100 to-blue-300">
       {/* Overlay */}
       <div
-        className={`fixed inset-0 z-10 ${
-          isSidebarOpen ? "block" : "hidden"
-        }`}
+        className={`fixed inset-0 z-10 ${isSidebarOpen ? "block" : "hidden"}`}
         onClick={toggleSidebar}
       ></div>
 
@@ -23,7 +21,7 @@ const Layout = ({ children }) => {
       <div
         className={`${
           isSidebarOpen ? "w-64" : "w-0"
-        } bg-blue-900 text-white transition-all duration-300 fixed top-0 left-0 bottom-0 overflow-hidden z-20`}
+        } bg-gradient-to-b from-blue-900 to-indigo-700 text-white transition-all duration-300 fixed top-0 left-0 bottom-0 overflow-hidden z-20 shadow-lg`}
       >
         <Sidebar isOpen={isSidebarOpen} />
       </div>
@@ -38,7 +36,7 @@ const Layout = ({ children }) => {
         <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
 
         {/* Content Section */}
-        <div className="flex-grow p-6 bg-gray-100 overflow-auto w-full">
+        <div className="flex-grow p-6 bg-gradient-to-r from-blue-100 to-blue-300 overflow-auto w-full shadow-lg rounded-lg">
           {children}
         </div>
       </div>

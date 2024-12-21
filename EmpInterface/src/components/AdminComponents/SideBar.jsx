@@ -22,7 +22,7 @@ const Sidebar = ({ isOpen }) => {
             {isOpen && <Link to={"/EmpDashboard"}>Employees</Link>}
           </li>
           <li className="hover:bg-blue-700 py-3 rounded-md cursor-pointer flex items-center space-x-2">
-          <FaUserEdit />
+            <FaUserEdit />
             {isOpen && <Link to={"/Attendance"}>Attendance</Link>}
           </li>
         </ul>

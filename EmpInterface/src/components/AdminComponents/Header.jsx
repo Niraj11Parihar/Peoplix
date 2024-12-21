@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { FaArrowRight, FaBars} from "react-icons/fa";
+import { FaArrowRight, FaBars } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import logo from "../../assets/logo/logo.png"
+import logo from "../../assets/logo/logo.png";
 
 const Header = ({ toggleSidebar, isSidebarOpen }) => {
-  const [profileImage, setProfileImage] = useState(""); 
-  const [userName, setUserName] = useState(""); 
+  const [profileImage, setProfileImage] = useState("");
+  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,20 +41,20 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
   return (
     <div className="flex items-center justify-between bg-white h-28 shadow-md px-4 py-3 w-full">
       <div className="flex items-center">
-      <span>
-        <img src={logo} alt="Logo" className="h-32"/>
-      </span>
-      <button
-        className="text-dark p-4"
-        onClick={toggleSidebar} // Toggle sidebar visibility
-      >
-        {isSidebarOpen ? 
-          <FaArrowRight className="text-2xl" /> 
-        : 
-          <FaBars className="text-2xl" />
-        }
-      </button>
-     </div>
+        <span>
+          <img src={logo} alt="Logo" className="h-32" />
+        </span>
+        <button
+          className="text-dark p-4"
+          onClick={toggleSidebar} // Toggle sidebar visibility
+        >
+          {isSidebarOpen ? (
+            <FaArrowRight className="text-2xl" />
+          ) : (
+            <FaBars className="text-2xl" />
+          )}
+        </button>
+      </div>
 
       <div className="flex items-center space-x-4">
         <Link to={"/"} className="text-xl font-bold text-gray-700">
