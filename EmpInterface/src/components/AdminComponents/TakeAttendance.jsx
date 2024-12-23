@@ -47,83 +47,93 @@ const AttendanceTodo = () => {
 
   return (
     <Layout>
-<>
-
-<div className="table-wrapper overflow-x-auto bg-white p-6 rounded-lg shadow-md border border-gray-300">
-        <table className="attendance-table w-full border-collapse">
-          <thead>
-            <tr>
-              <th className="bg-indigo-600 text-white px-4 py-2 border border-gray-300">
-                Employee Name
-              </th>
-              <th className="bg-indigo-600 text-white px-4 py-2 border border-gray-300">
-                Attendance
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {employees.map((employee) => (
-              <tr key={employee._id} className="border-b border-gray-300">
-                <td className="bg-gray-50 text-gray-800 px-4 py-2 border-r border-gray-300">
-                  {employee.name}
-                </td>
-                <td className="bg-gray-50 px-4 py-2 flex justify-center gap-2 border-l border-gray-300">
-                  <button
-                    onClick={() =>
-                      handleAttendanceChange(employee._id, "Present")
-                    }
-                    className={`${
-                      attendance[employee._id] === "Present"
-                        ? "bg-green-500 text-white"
-                        : "bg-green-100 text-green-800"
-                    } button px-4 py-2 rounded-md`}
-                  >
-                    Present
-                  </button>
-                  <button
-                    onClick={() =>
-                      handleAttendanceChange(employee._id, "Absent")
-                    }
-                    className={`${
-                      attendance[employee._id] === "Absent"
-                        ? "bg-red-500 text-white"
-                        : "bg-red-100 text-red-800"
-                    } button px-4 py-2 rounded-md`}
-                  >
-                    Absent
-                  </button>
-                  <button
-                    onClick={() =>
-                      handleAttendanceChange(employee._id, "Half Day")
-                    }
-                    className={`${
-                      attendance[employee._id] === "Half Day"
-                        ? "bg-yellow-500 text-white"
-                        : "bg-yellow-100 text-yellow-800"
-                    } button px-4 py-2 rounded-md`}
-                  >
-                    Half Day
-                  </button>
-                </td>
+      <>
+        <div className="table-wrapper overflow-x-auto bg-white p-6 rounded-lg shadow-md border border-gray-300">
+          <table className="attendance-table w-full border-collapse">
+            <thead>
+              <tr>
+                <th className="bg-indigo-600 text-white px-4 py-2 border border-gray-300">
+                  Employee Name
+                </th>
+                <th className="bg-indigo-600 text-white px-4 py-2 border border-gray-300">
+                  Attendance
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="flex justify-center mt-6">
-          <button
-            className="save-button bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition"
-            onClick={saveAttendance}
-          >
-            Save Attendance
-          </button>
+            </thead>
+            <tbody>
+              {employees.map((employee) => (
+                <tr key={employee._id} className="border-b border-gray-300">
+                  <td className="bg-gray-50 text-gray-800 px-4 py-2 border-r border-gray-300">
+                    {employee.name}
+                  </td>
+                  <td className="bg-gray-50 px-4 py-2 flex justify-center gap-2 border-l border-gray-300">
+                    <button
+                      onClick={() =>
+                        handleAttendanceChange(employee._id, "Present")
+                      }
+                      className={`${
+                        attendance[employee._id] === "Present"
+                          ? "bg-green-500 text-white"
+                          : "bg-green-100 text-green-800"
+                      } button px-4 py-2 rounded-md`}
+                    >
+                      Present
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleAttendanceChange(employee._id, "Absent")
+                      }
+                      className={`${
+                        attendance[employee._id] === "Absent"
+                          ? "bg-red-500 text-white"
+                          : "bg-red-100 text-red-800"
+                      } button px-4 py-2 rounded-md`}
+                    >
+                      Absent
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleAttendanceChange(employee._id, "Half Day")
+                      }
+                      className={`${
+                        attendance[employee._id] === "Half Day"
+                          ? "bg-yellow-500 text-white"
+                          : "bg-yellow-100 text-yellow-800"
+                      } button px-4 py-2 rounded-md`}
+                    >
+                      Half Day
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleAttendanceChange(employee._id, "Leave")
+                      }
+                      className={`${
+                        attendance[employee._id] === "Leave"
+                          ? "bg-purple-500 text-white"
+                          : "bg-purple-100 text-purple-800"
+                      } button px-4 py-2 rounded-md`}
+                    >
+                      Leave
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="flex justify-center mt-6">
+            <button
+              className="save-button bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition"
+              onClick={saveAttendance}
+            >
+              Save Attendance
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div className="my-20">
+        <div className="my-20">
           <AttendanceSheet />
-        </div> 
-
-</>    
+        </div>
+      </>
 
       {/* Toast container for displaying notifications */}
       <ToastContainer />

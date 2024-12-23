@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import EmpLayout from "./EmpComponents/EmpLayout";
-import { useNavigate } from "react-router-dom"; // You can use this hook to navigate to login page
+import axios from "axios";
 
 const Employee = () => {
   const [attendanceData, setAttendanceData] = useState([]);
@@ -30,21 +30,34 @@ const Employee = () => {
       const userRole = decodedToken.role; // Get the user role
 
       // Send a GET request to the backend to fetch attendance data
-      const response = await axios.get("http://localhost:8082/Attendance/getAttendanceRecords", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        "http://localhost:8082/Attendance/getAttendanceRecords",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const data = response.data;
 
       // If the user is an employee, filter the data to show only their attendance
-      const employeeAttendance = userRole === 'admin' ? data : data.filter((record) => record.employeeId === userId);
+      const employeeAttendance =
+        userRole === "admin"
+          ? data
+          : data.filter((record) => record.employeeId === userId);
 
       // Calculate attendance percentage and performance
-      const totalDays = employeeAttendance.length;
-      const presentDays = employeeAttendance.filter((record) => record.status === "Present").length;
-      const percentage = ((presentDays / totalDays) * 100).toFixed(2);
+      const totalDays = employeeAttendance.filter(
+        (record) => record.status !== "Leave"
+      ).length; // Exclude Leave from total days
+      const presentDays = employeeAttendance.filter(
+        (record) => record.status === "Present"
+      ).length;
+
+      const percentage = totalDays
+        ? ((presentDays / totalDays) * 100).toFixed(2)
+        : 0; // Avoid division by 0
 
       setAttendanceData(employeeAttendance);
       setAttendancePercentage(percentage);
@@ -67,12 +80,18 @@ const Employee = () => {
 
   // Get the unique dates
   const uniqueDates = Array.from(
-    new Set(attendanceData.map((record) => new Date(record.date).toISOString().split("T")[0]))
+    new Set(
+      attendanceData.map(
+        (record) => new Date(record.date).toISOString().split("T")[0]
+      )
+    )
   );
 
   // Get the status for each date
   const getStatusForDate = (date) => {
-    const record = attendanceData.find((r) => new Date(r.date).toISOString().split("T")[0] === date);
+    const record = attendanceData.find(
+      (r) => new Date(r.date).toISOString().split("T")[0] === date
+    );
     return record ? record.status : "Absent"; // Default to "Absent" if no record found
   };
 
@@ -91,7 +110,13 @@ const Employee = () => {
         </div>
         <div className="bg-pink-500 text-white rounded-lg p-4 shadow-lg">
           <h2 className="text-lg font-semibold">Leaves</h2>
-          <p className="text-xl">3 Days</p>
+          <p className="text-xl">
+            {
+              attendanceData.filter((record) => record.status === "Leave")
+                .length
+            }{" "}
+            Days
+          </p>
         </div>
         <div className="bg-blue-500 text-white rounded-lg p-4 shadow-lg">
           <h2 className="text-lg font-semibold">Projects</h2>
@@ -99,12 +124,25 @@ const Employee = () => {
         </div>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-8 w-1/5">
         <h2 className="text-xl font-semibold mb-4">Attendance Calendar</h2>
+        {/* Extract the month from the first date in uniqueDates */}
+        <h3 className="text-lg font-medium mb-4">
+          {new Date(uniqueDates[0]).toLocaleString("default", {
+            month: "long",
+          })}
+        </h3>
         <div className="grid grid-cols-7 gap-2">
           {uniqueDates.map((date, index) => {
             const status = getStatusForDate(date);
-            const statusClass = status === "Present" ? "bg-green-500" : status === "Absent" ? "bg-red-500" : "bg-yellow-500";
+            const statusClass =
+              status === "Present"
+                ? "bg-green-500"
+                : status === "Absent"
+                ? "bg-red-500"
+                : status === "Leave"
+                ? "bg-blue-500"
+                : "bg-yellow-500";
 
             return (
               <div
