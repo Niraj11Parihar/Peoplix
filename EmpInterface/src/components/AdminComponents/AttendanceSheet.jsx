@@ -11,7 +11,12 @@ const AttendanceSheet = () => {
 
   const fetchAttendanceRecords = async () => {
     try {
-      const response = await axios.get("http://localhost:8082/Attendance/getAttendanceRecords");
+      const token = localStorage.getItem("authToken")
+      const response = await axios.get("http://localhost:8082/Attendance/getAttendanceRecords",{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = response.data;
 
       setAttendanceData(data);

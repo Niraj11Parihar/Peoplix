@@ -1,6 +1,7 @@
 // Import necessary modules
 const EmpModel = require("../model/Emp.model");
 const Attendance = require("../model/EmpAttendence.model");
+const mongoose = require('mongoose');
 
 // Controller to fetch all employees
 const getAttendance = async (req, res) => {
@@ -47,29 +48,54 @@ const saveAttendance = async (req, res) => {
 // Controller to fetch attendance records
 const getAttendanceRecords = async (req, res) => {
   try {
-    const attendanceRecords = await Attendance.aggregate([
-      {
-        $lookup: {
-          from: "employeetbls", // Collection name for Employee
-          localField: "employeeId",
-          foreignField: "_id",
-          as: "employeeDetails",
+    const userId = req.user.id;   // Assuming 'userId' is set in the token
+    const userRole = req.user.role;  // Assuming 'role' is set in the token
+
+    let attendanceRecords;
+
+    if (userRole === 'admin') {
+      // If the user is an admin, fetch all employees' attendance records
+      attendanceRecords = await Attendance.aggregate([
+        {
+          $lookup: {
+            from: "employeetbls", // Collection name for Employee
+            localField: "employeeId",
+            foreignField: "_id",
+            as: "employeeDetails",
+          },
         },
-      },
-      {
-        $unwind: "$employeeDetails", // Unwind the employeeDetails array
-      },
-      {
-        $project: {
-          _id: 1,
-          employeeId: 1,
-          date: 1,
-          status: 1,
-          "employeeDetails.name": 1,
-          "employeeDetails.email": 1,
+        {
+          $unwind: "$employeeDetails", // Unwind the employeeDetails array
         },
-      },
-    ]);
+        {
+          $project: {
+            _id: 1,
+            employeeId: 1,
+            date: 1,
+            status: 1,
+            "employeeDetails.name": 1,
+            "employeeDetails.email": 1,
+          },
+        },
+      ]);
+    } else if (userRole === 'employee') {
+      // If the user is an employee, fetch only their own attendance records
+      attendanceRecords = await Attendance.aggregate([
+        {
+          $match: {
+            employeeId: new mongoose.Types.ObjectId(userId), // Match the logged-in user's employeeId
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            employeeId: 1,
+            date: 1,
+            status: 1,
+          },
+        },
+      ]);
+    }
 
     res.status(200).json(attendanceRecords);
   } catch (err) {
@@ -77,6 +103,8 @@ const getAttendanceRecords = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch attendance records" });
   }
 };
+
+
 
 module.exports = {
   getAttendance,

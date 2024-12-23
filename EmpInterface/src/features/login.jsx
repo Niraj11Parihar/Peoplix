@@ -38,7 +38,7 @@ function LoginPage() {
         if (user.role === "admin") {
           navigate("/");
         } else if (user.role === "employee") {
-          navigate("/EmpSite");
+          navigate("/Employee");
         }
       } else {
         toast.error("Failed to retrieve token.");
