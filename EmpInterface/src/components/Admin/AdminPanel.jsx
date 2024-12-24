@@ -11,7 +11,12 @@ function AdminPanel() {
     // Fetch attendance data from the API using axios
     const fetchAttendanceData = async () => {
       try {
-        const response = await axios.get("http://localhost:8082/Attendance/getAttendanceRecords"); // Update with your correct API endpoint
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get("http://localhost:8082/Attendance/getAttendanceRecords",{
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }); // Update with your correct API endpoint
         const records = response.data;
         setAttendanceData(records);
         calculateAttendancePerformance(records);

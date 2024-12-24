@@ -9,6 +9,7 @@ import EmployeeTable from './components/AdminComponents/EmpDashboard';
 import AttendanceTodo from './components/AdminComponents/TakeAttendance';
 import Employee from './components/emp/Employee';
 import EmployeeProfile from './components/emp/EmpComponents/EmpProfile';
+import ProjectManagement from './components/AdminComponents/ProjectAssignment';
 // import AttendanceSheet from './components/AdminComponents/AttendanceSheet';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path='/Attendance' element={<AttendanceTodo/>} />
           <Route path='/Employee' element={<Employee/>} />
           <Route path='/EmpProfile' element={<EmployeeProfile/>} />
+          <Route path='/ProjectManagement' element={<ProjectManagement/>} />
         </Routes>
       </div>
     </Router>
