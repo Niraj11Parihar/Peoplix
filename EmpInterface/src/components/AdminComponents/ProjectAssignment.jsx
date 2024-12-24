@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Layout from "../../features/Layout";
 
 const ProjectManagement = () => {
   const [formData, setFormData] = useState({
@@ -15,8 +16,8 @@ const ProjectManagement = () => {
   // Fetch all projects
   const fetchProjects = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get("/Projects/getProjects", {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.get("http://localhost:8082/Projects/getProjects", {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.data && response.data.projects) {
@@ -44,11 +45,14 @@ const ProjectManagement = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("token");
-      console.log(token);
-      await axios.post("/Projects/CreateProjects", formData, {
+      const token = localStorage.getItem("authToken");
+      console.log("Token being sent:", token); 
+      
+      const response = await axios.post("http://localhost:8082/Projects/CreateProjects", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      
+      console.log("Project created response:", response); // Log the response
       alert("Project assigned successfully!");
       setFormData({
         projectName: "",
@@ -59,12 +63,16 @@ const ProjectManagement = () => {
       });
       fetchProjects(); // Refresh the projects list
     } catch (error) {
-      alert("Error assigning project: " + error.message);
+      console.error("Error assigning project:", error);
+      alert("Error assigning project: " + error.response?.data?.message || error.message);
     }
   };
+  
 
   return (
-    <div className="bg-gray-50 min-h-full w-full py-8 px-4">
+   <Layout>
+
+<div className="bg-gray-50 min-h-full w-full py-8 px-4">
       {/* Assignment Form */}
       <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-lg mx-auto mb-8">
         <h2 className="text-xl font-semibold mb-4 text-gray-700">
@@ -141,14 +149,14 @@ const ProjectManagement = () => {
               htmlFor="projectHead"
               className="block text-gray-600 font-medium"
             >
-              Project Head (ID)
+              Project Head (Name)
             </label>
             <input
               type="text"
               name="projectHead"
               value={formData.projectHead}
               onChange={handleChange}
-              placeholder="Enter Project Head ID"
+              placeholder="Enter Project Head Name"
               required
               className="w-full mt-2 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -207,6 +215,8 @@ const ProjectManagement = () => {
         </div>
       </div>
     </div>
+
+   </Layout>
   );
 };
 
