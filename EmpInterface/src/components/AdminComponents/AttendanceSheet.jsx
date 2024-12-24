@@ -49,12 +49,36 @@ const AttendanceSheet = () => {
     return acc;
   }, {});
 
-  // Calculate consistency percentage
-  const calculateConsistency = (records) => {
-    const totalDays = uniqueDates.length;
-    const presentDays = records.filter((r) => r.status === "Present").length;
-    return ((presentDays / totalDays) * 100).toFixed(2);
-  };
+// Calculate consistency percentage
+const calculateConsistency = (records) => {
+  // Filter out the dates where the employee has no record (considered as holiday)
+  const employeeDates = uniqueDates.filter((date) =>
+    records.some((r) => r.date === date)
+  );
+
+  const totalDays = employeeDates.length;
+
+  // Count attendance based on status
+  const attendanceScore = records.reduce((count, record) => {
+    if (record.status === "Present") {
+      return count + 1;
+    } else if (record.status === "Half Day") {
+      return count + 0.5;
+    } else if (record.status === "Leave") {
+      return count + 1; 
+    } else if (record.status === "Absent") {
+      count - 1;
+      if(count < 0){
+        return count = 0;
+      } 
+    }
+    return count; // No change for holidays
+  }, 0);
+
+  return totalDays > 0 ? ((attendanceScore / totalDays) * 100).toFixed(2) : "N/A";
+};
+
+
 
   return (
     <div className="p-6 rounded-lg shadow-lg bg-gray-100 flex flex-col items-center justify-center">
@@ -124,10 +148,7 @@ const AttendanceSheet = () => {
           </tbody>
         </table>
       </div>
-
-      <p className="text-sm text-gray-700 mt-4">
-        Swipe left or right to view more columns on smaller screens.
-      </p>
+      
     </div>
   );
 };

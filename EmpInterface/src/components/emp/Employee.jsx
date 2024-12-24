@@ -5,31 +5,24 @@ import axios from "axios";
 
 const Employee = () => {
   const [attendanceData, setAttendanceData] = useState([]);
+  const [uniqueDates, setUniqueDates] = useState([]);
   const [attendancePercentage, setAttendancePercentage] = useState(0);
   const [attendancePerformance, setAttendancePerformance] = useState("");
-  const navigate = useNavigate(); // To navigate to the login page if token is missing
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchAttendanceData();
   }, []);
 
-  // Fetch attendance data for the logged-in employee or all employees (admin)
   const fetchAttendanceData = async () => {
     try {
       const token = localStorage.getItem("authToken");
-
-      // Check if token is missing or invalid
       if (!token) {
         console.error("Token is missing or invalid");
-        navigate("/login"); // Redirect to login page
+        navigate("/login");
         return;
       }
 
-      const decodedToken = JSON.parse(atob(token.split(".")[1])); // Decode the JWT token to get user info
-      const userId = decodedToken.id; // Get the user ID
-      const userRole = decodedToken.role; // Get the user role
-
-      // Send a GET request to the backend to fetch attendance data
       const response = await axios.get(
         "http://localhost:8082/Attendance/getAttendanceRecords",
         {
@@ -38,28 +31,27 @@ const Employee = () => {
           },
         }
       );
-
       const data = response.data;
 
-      // If the user is an employee, filter the data to show only their attendance
-      const employeeAttendance =
-        userRole === "admin"
-          ? data
-          : data.filter((record) => record.employeeId === userId);
+      setAttendanceData(data);
+
+      // Extract unique dates
+      const dates = Array.from(
+        new Set(
+          data.map((record) => new Date(record.date).toISOString().split("T")[0])
+        )
+      );
+      setUniqueDates(dates.sort());
 
       // Calculate attendance percentage and performance
-      const totalDays = employeeAttendance.filter(
-        (record) => record.status !== "Leave"
-      ).length; // Exclude Leave from total days
-      const presentDays = employeeAttendance.filter(
-        (record) => record.status === "Present"
-      ).length;
+      const employeeRecords = data.filter((record) => record.status !== "Holiday");
+      const totalDays = dates.length;
 
+      const attendanceScore = calculateAttendanceScore(employeeRecords);
       const percentage = totalDays
-        ? ((presentDays / totalDays) * 100).toFixed(2)
-        : 0; // Avoid division by 0
+        ? ((attendanceScore / totalDays) * 100).toFixed(2)
+        : 0;
 
-      setAttendanceData(employeeAttendance);
       setAttendancePercentage(percentage);
       setAttendancePerformance(calculateAttendancePerformance(percentage));
     } catch (err) {
@@ -67,7 +59,23 @@ const Employee = () => {
     }
   };
 
-  // Function to calculate performance based on attendance percentage
+  // Calculate attendance score based on attendance rules
+  const calculateAttendanceScore = (records) => {
+    return records.reduce((count, record) => {
+      if (record.status === "Present") {
+        return count + 1;
+      } else if (record.status === "Half Day") {
+        return count + 0.5;
+      } else if (record.status === "Leave") {
+        return count + 1; 
+      } else if (record.status === "Absent") {
+        return Math.max(count - 1, 0); 
+      }
+      return count; // No change for holidays
+    }, 0);
+  };
+
+  // Determine performance based on attendance percentage
   const calculateAttendancePerformance = (attendancePercentage) => {
     if (attendancePercentage >= 95) {
       return "Performance: Excellent";
@@ -77,15 +85,6 @@ const Employee = () => {
       return "Performance: Needs Improvement";
     }
   };
-
-  // Get the unique dates
-  const uniqueDates = Array.from(
-    new Set(
-      attendanceData.map(
-        (record) => new Date(record.date).toISOString().split("T")[0]
-      )
-    )
-  );
 
   // Get the status for each date
   const getStatusForDate = (date) => {
@@ -111,11 +110,7 @@ const Employee = () => {
         <div className="bg-pink-500 text-white rounded-lg p-4 shadow-lg">
           <h2 className="text-lg font-semibold">Leaves</h2>
           <p className="text-xl">
-            {
-              attendanceData.filter((record) => record.status === "Leave")
-                .length
-            }{" "}
-            Days
+            {attendanceData.filter((record) => record.status === "Leave").length} Days
           </p>
         </div>
         <div className="bg-blue-500 text-white rounded-lg p-4 shadow-lg">
@@ -126,11 +121,8 @@ const Employee = () => {
 
       <div className="mt-8 w-1/5">
         <h2 className="text-xl font-semibold mb-4">Attendance Calendar</h2>
-        {/* Extract the month from the first date in uniqueDates */}
         <h3 className="text-lg font-medium mb-4">
-          {new Date(uniqueDates[0]).toLocaleString("default", {
-            month: "long",
-          })}
+          {new Date(uniqueDates[0]).toLocaleString("default", { month: "long" })}
         </h3>
         <div className="grid grid-cols-7 gap-2">
           {uniqueDates.map((date, index) => {
@@ -142,7 +134,9 @@ const Employee = () => {
                 ? "bg-red-500"
                 : status === "Leave"
                 ? "bg-blue-500"
-                : "bg-yellow-500";
+                : status === "Half Day"
+                ? "bg-yellow-500"
+                : "bg-gray-500";
 
             return (
               <div

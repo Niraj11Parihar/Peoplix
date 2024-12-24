@@ -1,6 +1,7 @@
 import React from "react";
 import { FaUser, FaUserEdit, FaUsers } from "react-icons/fa";
 import { MdDashboardCustomize } from "react-icons/md";
+import { AiFillProject } from "react-icons/ai";
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ isOpen }) => {
@@ -24,6 +25,10 @@ const Sidebar = ({ isOpen }) => {
           <li className="hover:bg-blue-700 py-3 rounded-md cursor-pointer flex items-center space-x-2">
             <FaUserEdit />
             {isOpen && <Link to={"/Attendance"}>Attendance</Link>}
+          </li>
+          <li className="hover:bg-blue-700 py-3 rounded-md cursor-pointer flex items-center space-x-2">
+          <AiFillProject />
+            {isOpen && <Link to={"/ProjectManagement"}>ProjectManagement</Link>}
           </li>
         </ul>
       </nav>

@@ -28,25 +28,37 @@ function AdminPanel() {
     fetchAttendanceData();
   }, []);
 
-  // Calculate percentage of employees who are "Present" and assess performance
-  const calculateAttendancePerformance = (records) => {
-    const totalEmployees = records.length;
-    const presentCount = records.filter(
-      (record) => record.status === "Present"
-    ).length;
+// Calculate percentage of employees who are "Present" and assess performance
+const calculateAttendancePerformance = (records) => {
+  const totalEmployees = records.length;
 
-    const percentage = (presentCount / totalEmployees) * 100;
-    setAttendancePercentage(percentage.toFixed(2)); // Set percentage with two decimal places
-
-    // Determine attendance performance
-    if (percentage >= 90) {
-      setAttendancePerformance("Excellent");
-    } else if (percentage >= 75) {
-      setAttendancePerformance("Good");
-    } else {
-      setAttendancePerformance("Needs Improvement");
+  // Count attendance based on status
+  const presentCount = records.reduce((count, record) => {
+    if (record.status === "Present") {
+      return count + 1; 
+    } else if (record.status === "Half Day") {
+      return count + 0.5; 
+    } else if (record.status === "Leave") {
+      return count + 1;
+    } else if (record.status === "Leave"){
+      return Math.max(count-1,0)
     }
-  };
+    return count; // Exclude "Leave" or other statuses
+  }, 0);
+
+  const percentage = (presentCount / totalEmployees) * 100;
+  setAttendancePercentage(percentage.toFixed(2)); // Set percentage with two decimal places
+
+  // Determine attendance performance
+  if (percentage >= 90) {
+    setAttendancePerformance("Excellent");
+  } else if (percentage >= 75) {
+    setAttendancePerformance("Good");
+  } else {
+    setAttendancePerformance("Needs Improvement");
+  }
+};
+
 
   return (
     <Layout>
