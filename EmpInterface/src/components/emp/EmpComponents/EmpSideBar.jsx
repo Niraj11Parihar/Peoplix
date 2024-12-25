@@ -12,15 +12,11 @@ const EmpSidebar = ({ isOpen }) => {
         <ul>
           <li className="hover:bg-blue-700 py-3 rounded-md cursor-pointer flex items-center space-x-2">
             <MdDashboardCustomize />
-            {isOpen && <Link to={"/"}>Dashboard</Link>}
+            {isOpen && <Link to={"/Employee"}>Dashboard</Link>}
           </li>
           <li className="hover:bg-blue-700 py-3 rounded-md cursor-pointer flex items-center space-x-2">
             <AiFillProject />
-            {isOpen && <Link to={"/EmpProjects"}>Projects</Link>}
-          </li>
-          <li className="hover:bg-blue-700 py-3 rounded-md cursor-pointer flex items-center space-x-2">
-            <FaUserEdit />
-            {isOpen && <Link to={"/Attendance"}>Attendance</Link>}
+            {isOpen && <Link to={"/EmpProjectManagement"}>Projects</Link>}
           </li>
         </ul>
       </nav>

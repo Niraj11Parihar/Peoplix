@@ -10,7 +10,7 @@ import AttendanceTodo from './components/AdminComponents/TakeAttendance';
 import Employee from './components/emp/Employee';
 import EmployeeProfile from './components/emp/EmpComponents/EmpProfile';
 import ProjectManagement from './components/AdminComponents/ProjectAssignment';
-// import AttendanceSheet from './components/AdminComponents/AttendanceSheet';
+import EmpProjectManagement from './components/emp/EmpComponents/EmpPorjectManagment';
 
 function App() {
   return (
@@ -27,7 +27,7 @@ function App() {
           <Route path='/ProjectManagement' element={<ProjectManagement/>} />
           <Route path='/Employee' element={<Employee/>} />
           <Route path='/EmpProfile' element={<EmployeeProfile/>} />
-          {/* <Route path='/EmpProjectManagement' element={<EmpProjectManagement/>} /> */}
+          <Route path='/EmpProjectManagement' element={<EmpProjectManagement/>} />
         </Routes>
       </div>
     </Router>

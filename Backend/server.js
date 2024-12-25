@@ -6,6 +6,7 @@ const AS_router = require("./router/AdminSmall.router");
 const emp_router = require("./router/Employee.router");
 const Attendance_router = require("./router/Attendance.router");
 const Project_router = require("./router/Project.router");
+const Task_router = require("./router/TaskManager.router");
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use("/admin",AS_router);
 app.use("/Emp", emp_router);
 app.use("/Attendance", Attendance_router);
 app.use("/Projects", Project_router);
+app.use("/TaskManager", Task_router);
 
 // emp_router.get('/employees', (req, res) => {
 //   console.log("Fetching employees...");

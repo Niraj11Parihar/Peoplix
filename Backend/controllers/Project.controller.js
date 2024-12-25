@@ -31,7 +31,6 @@ const createProject = async (req, res) => {
 };
 
 
-const EmpModel = require('../model/Employee.model'); // Import Employee model
 
 const getProjects = async (req, res) => {
   try {
@@ -46,7 +45,7 @@ const getProjects = async (req, res) => {
     if (user.role === 'admin') {
       // Fetch all projects created by the admin
       projects = await ProjectModel.find({ adminId: userId });
-    } else if (user.role === 'Employee' && user.position === 'Project Manager') {
+    } else if (user.role === 'employee' && user.position === 'Project Manager') {
       // Fetch projects where the user is the project head
       projects = await ProjectModel.find({ projectHead: user.name });
     } else {
