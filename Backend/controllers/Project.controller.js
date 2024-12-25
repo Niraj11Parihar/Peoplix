@@ -1,4 +1,5 @@
 const ProjectModel = require("../model/Project.model");
+const EmpModel = require("../model/Emp.model");
 
 // Create Project Controller
 const createProject = async (req, res) => {
@@ -30,24 +31,39 @@ const createProject = async (req, res) => {
 };
 
 
+const EmpModel = require('../model/Employee.model'); // Import Employee model
+
 const getProjects = async (req, res) => {
   try {
-    const adminId = req.user.id; // Get the adminId from the token (already set in verifyToken middleware)
-    
-    // Fetch projects that belong to the admin
-    const projects = await ProjectModel.find({ adminId }); 
-    
-    if (!projects) {
+    const userId = req.user.id; // Get the user ID from the token
+    const user = await EmpModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    let projects;
+    if (user.role === 'admin') {
+      // Fetch all projects created by the admin
+      projects = await ProjectModel.find({ adminId: userId });
+    } else if (user.role === 'Employee' && user.position === 'Project Manager') {
+      // Fetch projects where the user is the project head
+      projects = await ProjectModel.find({ projectHead: user.name });
+    } else {
+      return res.status(403).json({ message: "Access denied." });
+    }
+
+    if (!projects || projects.length === 0) {
       return res.status(404).json({ message: "No projects found." });
     }
 
-    // Send the projects to the client
     res.status(200).json({ projects });
   } catch (error) {
-    console.error("Error fetching projects:", error); // Log any error
+    console.error("Error fetching projects:", error);
     res.status(500).json({ message: "Error fetching projects", error });
   }
 };
+
 
   module.exports = {
     createProject,

@@ -24,9 +24,10 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path='/EmpDashboard' element={<EmployeeTable/>} />
           <Route path='/Attendance' element={<AttendanceTodo/>} />
+          <Route path='/ProjectManagement' element={<ProjectManagement/>} />
           <Route path='/Employee' element={<Employee/>} />
           <Route path='/EmpProfile' element={<EmployeeProfile/>} />
-          <Route path='/ProjectManagement' element={<ProjectManagement/>} />
+          {/* <Route path='/EmpProjectManagement' element={<EmpProjectManagement/>} /> */}
         </Routes>
       </div>
     </Router>

@@ -1,5 +1,6 @@
 import React from "react";
-import { FaUser, FaUserEdit, FaUsers } from "react-icons/fa";
+import { AiFillProject } from "react-icons/ai";
+import {FaUserEdit} from "react-icons/fa";
 import { MdDashboardCustomize } from "react-icons/md";
 import { Link } from "react-router-dom";
 
@@ -14,12 +15,8 @@ const EmpSidebar = ({ isOpen }) => {
             {isOpen && <Link to={"/"}>Dashboard</Link>}
           </li>
           <li className="hover:bg-blue-700 py-3 rounded-md cursor-pointer flex items-center space-x-2">
-            <FaUser />
-            {isOpen && <Link to={"/supervisors"}>Supervisors</Link>}
-          </li>
-          <li className="hover:bg-blue-700 py-3 rounded-md cursor-pointer flex items-center space-x-2">
-            <FaUsers />
-            {isOpen && <Link to={"/EmpDashboard"}>Employees</Link>}
+            <AiFillProject />
+            {isOpen && <Link to={"/EmpProjects"}>Projects</Link>}
           </li>
           <li className="hover:bg-blue-700 py-3 rounded-md cursor-pointer flex items-center space-x-2">
             <FaUserEdit />
