@@ -38,13 +38,17 @@ const Employee = () => {
       // Extract unique dates
       const dates = Array.from(
         new Set(
-          data.map((record) => new Date(record.date).toISOString().split("T")[0])
+          data.map(
+            (record) => new Date(record.date).toISOString().split("T")[0]
+          )
         )
       );
       setUniqueDates(dates.sort());
 
       // Calculate attendance percentage and performance
-      const employeeRecords = data.filter((record) => record.status !== "Holiday");
+      const employeeRecords = data.filter(
+        (record) => record.status !== "Holiday"
+      );
       const totalDays = dates.length;
 
       const attendanceScore = calculateAttendanceScore(employeeRecords);
@@ -67,9 +71,9 @@ const Employee = () => {
       } else if (record.status === "Half Day") {
         return count + 0.5;
       } else if (record.status === "Leave") {
-        return count + 1; 
+        return count + 1;
       } else if (record.status === "Absent") {
-        return Math.max(count - 1, 0); 
+        return Math.max(count - 1, 0);
       }
       return count; // No change for holidays
     }, 0);
@@ -110,7 +114,11 @@ const Employee = () => {
         <div className="bg-pink-500 text-white rounded-lg p-4 shadow-lg">
           <h2 className="text-lg font-semibold">Leaves</h2>
           <p className="text-xl">
-            {attendanceData.filter((record) => record.status === "Leave").length} Days
+            {
+              attendanceData.filter((record) => record.status === "Leave")
+                .length
+            }{" "}
+            Days
           </p>
         </div>
         <div className="bg-blue-500 text-white rounded-lg p-4 shadow-lg">
@@ -121,32 +129,37 @@ const Employee = () => {
 
       <div className="mt-8 w-1/5">
         <h2 className="text-xl font-semibold mb-4">Attendance Calendar</h2>
-        <h3 className="text-lg font-medium mb-4">
-          {new Date(uniqueDates[0]).toLocaleString("default", { month: "long" })}
-        </h3>
-        <div className="grid grid-cols-7 gap-2">
-          {uniqueDates.map((date, index) => {
-            const status = getStatusForDate(date);
-            const statusClass =
-              status === "Present"
-                ? "bg-green-500"
-                : status === "Absent"
-                ? "bg-red-500"
-                : status === "Leave"
-                ? "bg-blue-500"
-                : status === "Half Day"
-                ? "bg-yellow-500"
-                : "bg-gray-500";
+        {/* attendance calendar card  */}
+        <div className="bg-white bg-opacity-60 p-4 rounded-lg"> 
+          <h3 className="text-xl text-center font-medium mb-4 ">
+            {new Date(uniqueDates[0]).toLocaleString("default", {
+              month: "long",
+            })}
+          </h3>
+          <div className="grid grid-cols-7 gap-2">
+            {uniqueDates.map((date, index) => {
+              const status = getStatusForDate(date);
+              const statusClass =
+                status === "Present"
+                  ? "bg-green-500"
+                  : status === "Absent"
+                  ? "bg-red-500"
+                  : status === "Leave"
+                  ? "bg-blue-500"
+                  : status === "Half Day"
+                  ? "bg-yellow-500"
+                  : "bg-gray-500";
 
-            return (
-              <div
-                key={index}
-                className={`p-2 rounded-md text-center ${statusClass} text-white`}
-              >
-                {new Date(date).getDate()}
-              </div>
-            );
-          })}
+              return (
+                <div
+                  key={index}
+                  className={`p-2 rounded-md text-center ${statusClass} text-white`}
+                >
+                  {new Date(date).getDate()}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </EmpLayout>
