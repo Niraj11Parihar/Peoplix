@@ -1,17 +1,15 @@
+const EmpModel = require("../model/Emp.model");
 const TaskModel = require("../model/Task.model");
 
 const assignTask = async (req, res) => {
-  const { taskName, projectName, deadline, projectHeadId, employeeName } = req.body;
-  
-  const { userId } = req.user; 
-  console.log(userId)
+  const { taskName, projectName, deadline, employeeName, projectHead } = req.body;
 
   try {
     const newTask = new TaskModel({
       taskName,
       projectName,
       deadline,
-      projectHeadId : userId,
+      projectHead,
       employeeName,
       status: "Not Started",
     });
@@ -26,20 +24,31 @@ const assignTask = async (req, res) => {
 };
 
 const getTasksByEmployee = async (req, res) => {
-  const { userName } = req.user; // Accessing employee's name from the decoded token
-  
+  const { id, role } = req.user;
+  const user = await EmpModel.findOne({_id : id});
   try {
-    const tasks = await TaskModel.find({ employeeName: userName }).populate("projectHeadId");
+    let tasks = [];
+
+    if (role === "employee" && user.position === "Project Manager") {
+
+      tasks = await TaskModel.find({ projectHead: user.name })
+
+    } else if (role === "employee") {
+
+      tasks = await TaskModel.find({ employeeName: userName }).populate("projectHeadId");
+    }
 
     if (tasks.length === 0) {
-      return res.status(404).json({ message: "No tasks assigned" });
+      return res.status(404).json({ message: "No tasks found" });
     }
 
     res.status(200).json({ tasks });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error fetching tasks" });
   }
 };
+
 
 module.exports = { assignTask, getTasksByEmployee };

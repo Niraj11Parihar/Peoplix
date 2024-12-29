@@ -63,6 +63,16 @@ const addEmployee = async (req, res) => {
   }
 };
 
+const getWholeEmpData = async (req,res) => {
+  try {
+      const employees = await EmpModel.find();
+      res.json(employees);
+  } catch (error) {
+    console.error("Error fetching employees:", error);
+    return res.status(500).json({ error: "Failed to fetch employees." });
+  }
+}
+
 // Fetch the employees data
 const getEmployees = async (req, res) => {
   try {
@@ -176,4 +186,5 @@ module.exports = {
   updateEmployee,
   deleteEmployee,
   saveAttendance,
+  getWholeEmpData
 };
