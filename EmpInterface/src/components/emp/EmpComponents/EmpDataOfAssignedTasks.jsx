@@ -42,6 +42,7 @@ const AssignedTaskList = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
 
+
   return (
     <div className="bg-gray-500 bg-opacity-15 p-5 shadow-md rounded-lg w-full lg:mt-0">
       {error && <p className="text-red-500 font-medium mb-4">{error}</p>}
@@ -76,7 +77,7 @@ const AssignedTaskList = () => {
                   <strong>Project Head:</strong> {task.projectHead}
                 </p>
                 <p className="text-gray-600">
-                  <strong>Status:</strong> {task.status || "Pending"}
+                  <strong >Status:</strong> {task.status || "Pending"}
                 </p>
               </div>
             ))}

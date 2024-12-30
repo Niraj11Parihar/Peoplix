@@ -63,15 +63,15 @@ const addEmployee = async (req, res) => {
   }
 };
 
-const getWholeEmpData = async (req,res) => {
+const getWholeEmpData = async (req, res) => {
   try {
-      const employees = await EmpModel.find();
-      res.json(employees);
+    const employees = await EmpModel.find();
+    res.json(employees);
   } catch (error) {
     console.error("Error fetching employees:", error);
     return res.status(500).json({ error: "Failed to fetch employees." });
   }
-}
+};
 
 // Fetch the employees data
 const getEmployees = async (req, res) => {
@@ -81,23 +81,22 @@ const getEmployees = async (req, res) => {
       const employee = await EmpModel.findOne({
         _id: userId,
       });
-
       if (!employee) {
         return res.status(404).json({ error: "Employee not found." });
       }
-      return res.status(200).json(employee); 
+      return res.status(200).json(employee);
     }
 
     // For admin, return all employees under their adminId
     if (role === "admin") {
-      const employees = await EmpModel.find({ adminId: userId }); 
+      const employees = await EmpModel.find({ adminId: userId });
 
       if (!employees.length) {
         return res
           .status(404)
           .json({ error: "No employees found for this admin." });
       }
-      return res.status(200).json(employees); 
+      return res.status(200).json(employees);
     }
 
     return res.status(403).json({ error: "Access denied." });
@@ -127,12 +126,10 @@ const updateEmployee = async (req, res) => {
         .json({ error: "Employee not found or access denied." });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Employee updated successfully!",
-        employee: updatedEmployee,
-      });
+    res.status(200).json({
+      message: "Employee updated successfully!",
+      employee: updatedEmployee,
+    });
   } catch (error) {
     console.error("Error updating employee:", error);
     res.status(500).json({ error: "Failed to update employee." });
@@ -186,5 +183,5 @@ module.exports = {
   updateEmployee,
   deleteEmployee,
   saveAttendance,
-  getWholeEmpData
+  getWholeEmpData,
 };

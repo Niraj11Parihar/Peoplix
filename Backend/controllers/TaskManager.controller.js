@@ -25,17 +25,17 @@ const assignTask = async (req, res) => {
 
 const getTasksByEmployee = async (req, res) => {
   const { id, role } = req.user;
-  const user = await EmpModel.findOne({_id : id});
+  const user = await EmpModel.findOne({ _id: id });
+
   try {
     let tasks = [];
 
     if (role === "employee" && user.position === "Project Manager") {
-
-      tasks = await TaskModel.find({ projectHead: user.name })
-
+      // Fetch tasks for project manager
+      tasks = await TaskModel.find({ projectHead: user.name });
     } else if (role === "employee") {
-
-      tasks = await TaskModel.find({ employeeName: userName }).populate("projectHeadId");
+      // Fetch tasks for assigned employee
+      tasks = await TaskModel.find({ employeeName: user.name }).populate("projectHead");
     }
 
     if (tasks.length === 0) {
@@ -43,7 +43,6 @@ const getTasksByEmployee = async (req, res) => {
     }
 
     res.status(200).json({ tasks });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error fetching tasks" });
@@ -51,4 +50,26 @@ const getTasksByEmployee = async (req, res) => {
 };
 
 
-module.exports = { assignTask, getTasksByEmployee };
+// Controller to update task status
+const updateTaskStatus = async (req, res) => {
+  const { taskId, status } = req.body;
+
+  try {
+    const task = await TaskModel.findById(taskId);
+
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    task.status = status; // Update the task status
+    await task.save();
+
+    res.status(200).json({ message: "Task status updated successfully", task });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error updating task status" });
+  }
+};
+
+
+module.exports = { assignTask, getTasksByEmployee, updateTaskStatus };

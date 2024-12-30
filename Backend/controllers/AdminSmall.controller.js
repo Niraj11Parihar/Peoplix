@@ -9,7 +9,6 @@ const getProfile = async (req, res) => {
     if (!admin) {
       return res.status(404).json({ message: "Admin not found" });
     }
-
     // Return profile data with additional fields
     res.json({
       id: admin._id,
