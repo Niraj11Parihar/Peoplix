@@ -62,7 +62,53 @@ const getProjects = async (req, res) => {
 };
 
 
+// Update Project Controller
+const updateProject = async (req, res) => {
+  try {
+    const { projectId } = req.params;   
+    const { projectName, clientName, startDate, endDate, projectHead, Projectstatus } = req.body;
+    // Check if the user has permission to update the project
+    
+    if (req.user.role !== "admin" && req.user.role !== "employee") {
+      return res.status(403).json({ message: "Access denied. Role not recognized." });
+    }
+
+    // If the user is an employee, ensure they are a Project Manager for this project
+    if (req.user.role === "employee") {
+      const user = await EmpModel.findOne({ _id: req.user.id });
+      if (!user || user.position !== "Project Manager") {
+        return res.status(403).json({ message: "Access denied. Not a Project Manager." });
+      }
+
+      const project = await ProjectModel.findOne({ _id: projectId, projectHead: user.name });
+      if (!project) {
+        return res.status(404).json({ message: "Project not found or access denied." });
+      }
+    }
+
+    // Update project details
+    const updatedProject = await ProjectModel.findByIdAndUpdate(
+      projectId,
+      { projectName, clientName, startDate, endDate, projectHead, Projectstatus },
+      { new: true, runValidators: true } // Return the updated document and validate fields
+    );
+
+    if (!updatedProject) {
+      return res.status(404).json({ message: "Project not found." });
+    }
+
+    res.status(200).json({ message: "Project updated successfully.", project: updatedProject });
+  } catch (error) {
+    console.error("Error updating project:", error);
+    res.status(500).json({ message: "Error updating project", error });
+  }
+};
+
+
+
+
 module.exports = {
   createProject,
   getProjects,
+  updateProject
 };

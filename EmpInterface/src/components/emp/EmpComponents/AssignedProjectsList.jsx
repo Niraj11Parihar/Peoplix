@@ -40,7 +40,7 @@ const AssignedProjectsList = ({ projects, error }) => {
   }
 
   return (
-    <div className="bg-gray-500 bg-opacity-15 p-5 shadow-md rounded-lg w-full lg:w-1/3 h-[60vh] lg:h-[70vh] overflow-y-auto">
+    <div className="bg-gray-500 bg-opacity-15 p-5 shadow-md rounded-lg w-full lg:w-1/3 h-[60vh] lg:h-[75vh] overflow-y-auto">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Assigned Projects</h1>
       {error && <p className="text-red-500 font-medium mb-4">{error}</p>}
       <div className="w-full max-w-4xl overflow-y-auto p-4">

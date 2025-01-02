@@ -17,6 +17,8 @@ const TaskAssigningForm = ({ projects }) => {
   const [userPosition, setUserPosition] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
   const [selectedTask, setSelectedTask] = useState("");
+  const [selectedProject, setSelectedProject] = useState("");
+  const [Projectstatus, setProjectStatus] = useState("");
   const navigate = useNavigate();
 
   // Fetch employees, user position, and tasks
@@ -38,7 +40,6 @@ const TaskAssigningForm = ({ projects }) => {
       );
 
       setUserPosition(response.data.position); // Set the user position
-      console.log(response.data.position);
 
       // Fetch all employees data
       const employeesResponse = await axios.get(
@@ -80,6 +81,14 @@ const TaskAssigningForm = ({ projects }) => {
 
   const handleTaskSelection = (e) => {
     setSelectedTask(e.target.value); // Set selected task
+  };
+
+  const handleProjectStatusChange = (e) => {
+    setProjectStatus(e.target.value); // Set selected project status
+  };
+
+  const handleProjectSelection = (e) => {
+    setSelectedProject(e.target.value); // Set selected project
   };
 
   const handleSubmit = async (e) => {
@@ -130,104 +139,171 @@ const TaskAssigningForm = ({ projects }) => {
     }
   };
 
+  const handleProjectStatusSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setMessage("");
+
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.patch(
+        `http://localhost:8082/Projects/updateProject/${selectedProject}`,
+        { Projectstatus : Projectstatus },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setMessage(response.data.message);
+      setProjectStatus(""); // Reset project status
+    } catch (err) {
+      setError(err.response?.data?.message || "Error updating project status.");
+    }
+  };
+
   return (
-    <div>
+    <div className="">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Task Assignment</h2>
       {message && <p className="text-green-500 font-medium mb-4">{message}</p>}
       {error && <p className="text-red-500 font-medium mb-4">{error}</p>}
 
       {userPosition === "Project Manager" ? (
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-gray-700">Task Name</label>
-            <input
-              type="text"
-              name="taskName"
-              value={taskData.taskName}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">Employee Name</label>
-            <select
-              name="employeeName"
-              value={taskData.employeeName}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              required
-            >
-              <option value="" disabled>
-                Select an employee
-              </option>
-              {employees.map((employee) => (
-                <option key={employee._id} value={employee.name}>
-                  {employee.name} [{employee.position}]
+        <>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-gray-700">Task Name</label>
+              <input
+                type="text"
+                name="taskName"
+                value={taskData.taskName}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-700">Employee Name</label>
+              <select
+                name="employeeName"
+                value={taskData.employeeName}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                required
+              >
+                <option value="" disabled>
+                  Select an employee
                 </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-gray-700">Deadline</label>
-            <input
-              type="date"
-              name="deadline"
-              value={taskData.deadline}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">Project Name</label>
-            <select
-              name="projectName"
-              value={taskData.projectName}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              required
+                {employees.map((employee) => (
+                  <option key={employee._id} value={employee.name}>
+                    {employee.name} [{employee.position}]
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-700">Deadline</label>
+              <input
+                type="date"
+                name="deadline"
+                value={taskData.deadline}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-700">Project Name</label>
+              <select
+                name="projectName"
+                value={taskData.projectName}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                required
+              >
+                <option value="" disabled>
+                  Select a project
+                </option>
+                {projects?.length > 0 ? (
+                  projects.map((project) => (
+                    <option key={project._id} value={project.projectName}>
+                      {project.projectName}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>No projects available</option>
+                )}
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-700">Project Head</label>
+              <select
+                name="projectHead"
+                value={taskData.projectHead}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                required
+              >
+                <option value="" disabled>
+                  Select a Project Head
+                </option>
+                {projects.map((project) => (
+                  <option key={project._id} value={project.projectHead}>
+                    {project.projectHead}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              type="submit"
+              className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg"
             >
-              <option value="" disabled>
-                Select a project
-              </option>
-              {projects?.length > 0 ? (
-                projects.map((project) => (
-                  <option key={project._id} value={project.projectName}>
+              Assign Task
+            </button>
+          </form>
+
+          <form onSubmit={handleProjectStatusSubmit} className="space-y-4">
+            <div>
+              <label className="block text-gray-700">Select Project</label>
+              <select
+                value={selectedProject}
+                onChange={handleProjectSelection}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                required
+              >
+                <option value="" disabled>
+                  Select a project
+                </option>
+                {projects.map((project) => (
+                  <option key={project._id} value={project._id}>
                     {project.projectName}
                   </option>
-                ))
-              ) : (
-                <option disabled>No projects available</option>
-              )}
-            </select>
-          </div>
-          <div>
-            <label className="block text-gray-700">Project Head</label>
-            <select
-              name="projectHead"
-              value={taskData.projectHead}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              required
-            >
-              <option value="" disabled>
-                Select a Project Head
-              </option>
-              {projects.map((project) => (
-                <option key={project._id} value={project.projectHead}>
-                  {project.projectHead}
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-700">Project Status</label>
+              <select
+                name="Projectstatus"
+                value={Projectstatus}
+                onChange={handleProjectStatusChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                required
+              >
+                <option value="" disabled>
+                  Select status
                 </option>
-              ))}
-            </select>
-          </div>
-          <button
-            type="submit"
-            className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg"
-          >
-            Assign Task
-          </button>
-        </form>
+                <option value="Not Started" className="text-red-600">Not Started</option>
+                <option value="In Progress" className="text-blue-600">In Progress</option>
+                <option value="Completed" className="text-green-600">Completed</option>
+              </select>
+            </div>
+            <button
+              type="submit"
+              className="w-full px-4 py-2 bg-green-500 text-white rounded-lg"
+            >
+              Update Project Status
+            </button>
+          </form>
+        </>
       ) : (
         <form onSubmit={handleStatusSubmit} className="space-y-4">
           <div>
@@ -261,7 +337,7 @@ const TaskAssigningForm = ({ projects }) => {
                 Select status
               </option>
               <option value="NotStarted" className="text-red-600">Not Started</option>
-              <option value="InProgress" className="text-blue-6f00">In Progress</option>
+              <option value="InProgress" className="text-blue-600">In Progress</option>
               <option value="Completed" className="text-green-600">Completed</option>
             </select>
           </div>

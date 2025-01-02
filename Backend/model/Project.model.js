@@ -24,18 +24,18 @@ const projectSchema = new mongoose.Schema(
     endDate: {
       type: Date,
       required: true,
-      validate: {
-        validator: function (value) {
-          return value > this.startDate; // Ensure the end date is after the start date
-        },
-        message: 'End date must be after the start date.',
-      },
     },
     projectHead: {
-      type: String, // Storing the name of the project head
+      type: String,
       required: true,
       trim: true,
     },
+    Projectstatus:{
+      type:String,
+      required:true,
+      enum:["Not Started","In Progress","Completed"],
+      default:"Not Started" 
+    }
   },
   {
     timestamps: true, // Automatically add createdAt and updatedAt fields

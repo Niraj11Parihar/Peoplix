@@ -38,7 +38,7 @@ const EmpProjectManagement = () => {
         <AssignedProjectsList projects={projects} error={error} />
 
         {/* Task Assignment Form */}
-        <div className="bg-gray-500 bg-opacity-15 p-5 shadow-md rounded-lg w-full lg:w-2/3 lg:h-[70vh]">
+        <div className="bg-gray-500 bg-opacity-15 p-5 shadow-md rounded-lg w-full lg:w-2/3">
           <TaskAssigningForm projects={projects} />
         </div>
       </div>

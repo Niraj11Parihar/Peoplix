@@ -12,6 +12,7 @@ const ProjectManagement = () => {
   });
 
   const [projects, setProjects] = useState([]); // Initialize as an empty array
+  const [editingProject, setEditingProject] = useState(null); // Track the project being edited
 
   // Fetch all projects
   const fetchProjects = async () => {
@@ -51,16 +52,30 @@ const ProjectManagement = () => {
       const token = localStorage.getItem("authToken");
       console.log("Token being sent:", token);
 
-      const response = await axios.post(
-        "http://localhost:8082/Projects/CreateProjects",
-        formData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      if (editingProject) {
+        // Update existing project
+        const response = await axios.patch(
+          `http://localhost:8082/Projects/updateProject/${editingProject._id}`,
+          formData,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        console.log("Project updated response:", response);
+        alert("Project updated successfully!");
+      } else {
+        // Create new project
+        const response = await axios.post(
+          "http://localhost:8082/Projects/CreateProjects",
+          formData,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        console.log("Project created response:", response);
+        alert("Project assigned successfully!");
+      }
 
-      console.log("Project created response:", response); // Log the response
-      alert("Project assigned successfully!");
       setFormData({
         projectName: "",
         clientName: "",
@@ -68,14 +83,27 @@ const ProjectManagement = () => {
         endDate: "",
         projectHead: "",
       });
+      setEditingProject(null); // Reset editing state
       fetchProjects(); // Refresh the projects list
     } catch (error) {
-      console.error("Error assigning project:", error);
+      console.error("Error submitting project:", error);
       alert(
-        "Error assigning project: " + error.response?.data?.message ||
+        "Error submitting project: " + error.response?.data?.message ||
           error.message
       );
     }
+  };
+
+  // Handle edit button click
+  const handleEdit = (project) => {
+    setEditingProject(project);
+    setFormData({
+      projectName: project.projectName,
+      clientName: project.clientName,
+      startDate: project.startDate.split("T")[0],
+      endDate: project.endDate.split("T")[0],
+      projectHead: project.projectHead || "",
+    });
   };
 
   return (
@@ -84,7 +112,7 @@ const ProjectManagement = () => {
         {/* Assignment Form */}
         <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-lg mx-auto mb-8">
           <h2 className="text-xl font-semibold mb-4 text-gray-700">
-            Assign a Project
+            {editingProject ? "Edit Project" : "Assign a Project"}
           </h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
@@ -177,7 +205,7 @@ const ProjectManagement = () => {
               type="submit"
               className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
-              Assign Project
+              {editingProject ? "Update Project" : "Assign Project"}
             </button>
           </form>
         </div>
@@ -210,12 +238,18 @@ const ProjectManagement = () => {
                   </p>
                   <p className="text-gray-600">
                     <strong>Project Head:</strong>{" "}
-                    {project.projectHead?.name || "Not Assigned"}
+                    {project.projectHead || "Not Assigned"}
                   </p>
                   <p className="text-gray-600">
                     <strong>Status:</strong>{" "}
-                    {project.tasks?.length > 0 ? "In Progress" : "Not Started"}
+                    {project.Projectstatus}
                   </p>
+                  <button
+                    onClick={() => handleEdit(project)}
+                    className="mt-4 w-full bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                  >
+                    Edit
+                  </button>
                 </div>
               ))
             ) : (

@@ -122,7 +122,7 @@ const Employee = () => {
       </div>
 
       {/* Attendance calendar for employees  */}
-      <div className="mt-8 w-1/6 bg-white bg-opacity-50 p-3 rounded-lg">
+      <div className="mt-8 w-1/5 bg-white bg-opacity-50 p-3 rounded-lg">
         <h2 className="text-xl font-semibold mb-4 text-center">Attendance Calendar</h2>
         <div className="flex justify-between mb-4">
           <button
