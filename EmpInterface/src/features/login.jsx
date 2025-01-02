@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify"; // Toastify for notifications
-import "react-toastify/dist/ReactToastify.css"; // Import Toastify styles
+import { ToastContainer, toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css"; 
 import { Link, useNavigate } from "react-router-dom"; 
 import logo from "../assets/logo/logo.png"; 
 
@@ -11,14 +11,12 @@ function LoginPage() {
     password: "",
     role: "admin",
   });
-  const navigate = useNavigate(); // Initialize useNavigate for navigation
+  const navigate = useNavigate(); 
 
-  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -29,7 +27,6 @@ function LoginPage() {
 
       const { token, message, user } = response.data;
 
-      // Store the token in localStorage
       if (token) {
         localStorage.setItem("authToken", token);
         toast.success(message || "Login successful!");
@@ -44,7 +41,6 @@ function LoginPage() {
         toast.error("Failed to retrieve token.");
       }
     } catch (error) {
-      // Display error message if login fails
       toast.error(
         error.response?.data?.message || "Login failed. Check your credentials."
       );

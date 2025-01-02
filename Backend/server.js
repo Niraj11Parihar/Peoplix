@@ -12,7 +12,7 @@ const app = express();
 
 // Apply CORS middleware before defining routes
 app.use(cors({
-  origin: 'http://localhost:5173', 
+  origin: 'http://localhost:5174', 
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'], 
 }));
@@ -29,11 +29,6 @@ app.use("/Emp", emp_router);
 app.use("/Attendance", Attendance_router);
 app.use("/Projects", Project_router);
 app.use("/TaskManager", Task_router);
-
-// emp_router.get('/employees', (req, res) => {
-//   console.log("Fetching employees...");
-//   res.send("Route is working");
-// });
 
 app.listen(8082, (err) => {
   db;

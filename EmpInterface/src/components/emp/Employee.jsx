@@ -4,8 +4,8 @@ import EmpLayout from "./EmpComponents/EmpLayout";
 import axios from "axios";
 
 const Employee = () => {
-  const [attendanceData, setAttendanceData] = useState([]);
-  const [uniqueDates, setUniqueDates] = useState([]);
+  const [attendanceData, setAttendanceData] = useState({});
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [attendancePercentage, setAttendancePercentage] = useState(0);
   const [attendancePerformance, setAttendancePerformance] = useState("");
   const navigate = useNavigate();
@@ -33,69 +33,64 @@ const Employee = () => {
       );
       const data = response.data;
 
-      setAttendanceData(data);
+      // Group attendance data by month
+      const groupedData = data.reduce((acc, record) => {
+        const date = new Date(record.date);
+        const month = date.getMonth();
+        if (!acc[month]) acc[month] = [];
+        acc[month].push(record);
+        return acc;
+      }, {});
 
-      // Extract unique dates
-      const dates = Array.from(
-        new Set(
-          data.map(
-            (record) => new Date(record.date).toISOString().split("T")[0]
-          )
-        )
-      );
-      setUniqueDates(dates.sort());
+      setAttendanceData(groupedData);
 
-      // Calculate attendance percentage and performance
-      const employeeRecords = data.filter(
-        (record) => record.status !== "Holiday"
-      );
-      const totalDays = dates.length;
-
-      const attendanceScore = calculateAttendanceScore(employeeRecords);
-      const percentage = totalDays
-        ? ((attendanceScore / totalDays) * 100).toFixed(2)
-        : 0;
-
-      setAttendancePercentage(percentage);
-      setAttendancePerformance(calculateAttendancePerformance(percentage));
+      // Calculate attendance for the current month
+      const currentMonthData = groupedData[currentMonth] || [];
+      calculateAttendanceStats(currentMonthData);
     } catch (err) {
       console.error("Error fetching attendance records:", err);
     }
   };
 
-  // Calculate attendance score based on attendance rules
-  const calculateAttendanceScore = (records) => {
-    return records.reduce((count, record) => {
-      if (record.status === "Present") {
-        return count + 1;
-      } else if (record.status === "Half Day") {
-        return count + 0.5;
-      } else if (record.status === "Leave") {
-        return count + 1;
-      } else if (record.status === "Absent") {
-        return Math.max(count - 1, 0);
-      }
-      return count; // No change for holidays
+  const calculateAttendanceStats = (records) => {
+    const totalDays = new Set(
+      records.map((record) => new Date(record.date).toISOString().split("T")[0])
+    ).size;
+
+    const attendanceScore = records.reduce((count, record) => {
+      if (record.status === "Present") return count + 1;
+      else if (record.status === "Half Day") return count + 0.5;
+      else if (record.status === "Leave") return count + 1;
+      else if (record.status === "Absent") return Math.max(count - 1, 0);
+      return count;
     }, 0);
+
+    const percentage = totalDays
+      ? ((attendanceScore / totalDays) * 100).toFixed(2)
+      : 0;
+
+    setAttendancePercentage(percentage);
+    setAttendancePerformance(calculateAttendancePerformance(percentage));
   };
 
-  // Determine performance based on attendance percentage
   const calculateAttendancePerformance = (attendancePercentage) => {
-    if (attendancePercentage >= 95) {
-      return "Performance: Excellent";
-    } else if (attendancePercentage >= 85) {
-      return "Performance: Good";
-    } else {
-      return "Performance: Needs Improvement";
-    }
+    if (attendancePercentage >= 95) return "Performance: Excellent";
+    else if (attendancePercentage >= 85) return "Performance: Good";
+    else return "Performance: Needs Improvement";
   };
 
-  // Get the status for each date
+  const changeMonth = (direction) => {
+    const newMonth = (currentMonth + direction + 12) % 12;
+    setCurrentMonth(newMonth);
+    calculateAttendanceStats(attendanceData[newMonth] || []);
+  };
+
   const getStatusForDate = (date) => {
-    const record = attendanceData.find(
+    const currentMonthData = attendanceData[currentMonth] || [];
+    const record = currentMonthData.find(
       (r) => new Date(r.date).toISOString().split("T")[0] === date
     );
-    return record ? record.status : "Absent"; // Default to "Absent" if no record found
+    return record ? record.status : "Absent";
   };
 
   return (
@@ -114,10 +109,9 @@ const Employee = () => {
         <div className="bg-pink-500 text-white rounded-lg p-4 shadow-lg">
           <h2 className="text-lg font-semibold">Leaves</h2>
           <p className="text-xl">
-            {
-              attendanceData.filter((record) => record.status === "Leave")
-                .length
-            }{" "}
+            {(attendanceData[currentMonth] || []).filter(
+              (record) => record.status === "Leave"
+            ).length}{" "}
             Days
           </p>
         </div>
@@ -127,18 +121,35 @@ const Employee = () => {
         </div>
       </div>
 
-      <div className="mt-8 w-1/5">
-        <h2 className="text-xl font-semibold mb-4">Attendance Calendar</h2>
-        {/* attendance calendar card  */}
-        <div className="bg-white bg-opacity-60 p-4 rounded-lg"> 
-          <h3 className="text-xl text-center font-medium mb-4 ">
-            {new Date(uniqueDates[0]).toLocaleString("default", {
+      {/* Attendance calendar for employees  */}
+      <div className="mt-8 w-1/6 bg-white bg-opacity-50 p-3 rounded-lg">
+        <h2 className="text-xl font-semibold mb-4 text-center">Attendance Calendar</h2>
+        <div className="flex justify-between mb-4">
+          <button
+            onClick={() => changeMonth(-1)}
+            className="bg-gray-700 text-white px-4 py-2 rounded-lg"
+          >
+            Previous
+          </button>
+          <h3 className="text-xl font-bold">
+            {new Date(2022, currentMonth).toLocaleString("default", {
               month: "long",
             })}
           </h3>
+          <button
+            onClick={() => changeMonth(1)}
+            className="bg-gray-700 text-white px-4 py-2 rounded-lg"
+          >
+            Next
+          </button>
+        </div>
+        <div className="p-4 rounded-lg">
           <div className="grid grid-cols-7 gap-2">
-            {uniqueDates.map((date, index) => {
-              const status = getStatusForDate(date);
+            {(
+              attendanceData[currentMonth] || []
+            ).map((record, index) => {
+              const date = new Date(record.date).getDate();
+              const status = record.status;
               const statusClass =
                 status === "Present"
                   ? "bg-green-500"
@@ -155,7 +166,7 @@ const Employee = () => {
                   key={index}
                   className={`p-2 rounded-md text-center ${statusClass} text-white`}
                 >
-                  {new Date(date).getDate()}
+                  {date}
                 </div>
               );
             })}

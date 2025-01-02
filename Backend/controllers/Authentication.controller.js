@@ -55,7 +55,7 @@ const registerAdmin = async (req, res) => {
 // login for both employee and admin
 const login = async (req, res) => {
   const { email, password, role } = req.body;
-
+  console.log(req.body);
   try {
     let user;
     if (role === "admin") user = await adminModel.findOne({ email });
@@ -67,7 +67,6 @@ const login = async (req, res) => {
 
     const isMatch = bcrypt.compare(password, user.password);
     if (!isMatch) {
-      console.error("Invalid credentials");
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
