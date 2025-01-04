@@ -18,7 +18,7 @@ const RecentlyJoinedEmployees = () => {
       // Assuming response contains an array of employees with "joiningDate"
       const sortedEmployees = response.data
         .sort((a, b) => new Date(b.joiningDate) - new Date(a.joiningDate)) // Sort by joiningDate descending
-        .slice(0, 5); // Fetch the most recent 5 employees
+        .slice(0, 7); // Fetch the most recent 5 employees
       setEmployees(sortedEmployees);
     } catch (error) {
       toast.error("Failed to load recently joined employees.");
@@ -30,7 +30,7 @@ const RecentlyJoinedEmployees = () => {
   }, [fetchRecentlyJoinedEmployees]);
 
   return (
-    <div className="p-6 h-auto w-full md:w-2/3 lg:w-10/12 bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 shadow-xl rounded-lg">
+    <div className="p-6 h-auto md:full lg:w-full   bg-gradient-to-r from-purple-200 via-purple-300 to-purple-400 shadow-xl rounded-lg">
     <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
       Recently Joined Employees
     </h2>
@@ -55,12 +55,12 @@ const RecentlyJoinedEmployees = () => {
                   index % 2 === 0 ? "bg-purple-100" : "bg-purple-200"
                 } text-gray-800 hover:bg-purple-300`}
               >
-                <td className="py-2 px-4 text-center">{employee.name}</td>
-                <td className="py-2 px-4 text-center">{employee.email}</td>
-                <td className="py-2 px-4 text-center">{employee.phone}</td>
-                <td className="py-2 px-4 text-center">{employee.city}</td>
-                <td className="py-2 px-4 text-center">{employee.salary}</td>
-                <td className="py-2 px-4 text-center">
+                <td className="xl:text-lg py-2 px-4 text-center">{employee.name}</td>
+                <td className="xl:text-lg py-2 px-4 text-center">{employee.email}</td>
+                <td className="xl:text-lg py-2 px-4 text-center">{employee.phone}</td>
+                <td className="xl:text-lg py-2 px-4 text-center">{employee.city}</td>
+                <td className="xl:text-lg py-2 px-4 text-center">{employee.salary}</td>
+                <td className="xl:text-lg py-2 px-4 text-center">
                   {new Date(employee.joiningDate).toLocaleDateString()}
                 </td>
               </tr>

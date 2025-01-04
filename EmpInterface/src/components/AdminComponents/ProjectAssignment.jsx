@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Layout from "../../features/Layout";
+import { confirmAlert } from "react-confirm-alert"; // Import confirmAlert
+import { toast } from "react-toastify"; // Import toast
+import "react-toastify/dist/ReactToastify.css"; // Import toast CSS
+import "react-confirm-alert/src/react-confirm-alert.css"; // Import the confirm alert CSS
+
 
 const ProjectManagement = () => {
   const [formData, setFormData] = useState({
@@ -11,8 +16,8 @@ const ProjectManagement = () => {
     projectHead: "",
   });
 
-  const [projects, setProjects] = useState([]); // Initialize as an empty array
-  const [editingProject, setEditingProject] = useState(null); // Track the project being edited
+  const [projects, setProjects] = useState([]);
+  const [editingProject, setEditingProject] = useState(null);
 
   // Fetch all projects
   const fetchProjects = async () => {
@@ -25,13 +30,13 @@ const ProjectManagement = () => {
         }
       );
       if (response.data && response.data.projects) {
-        setProjects(response.data.projects); // Ensure projects exist in the response
+        setProjects(response.data.projects);
       } else {
-        setProjects([]); // Fallback to empty array
+        setProjects([]);
       }
     } catch (error) {
       console.error("Error fetching projects:", error);
-      setProjects([]); // Fallback to empty array on error
+      setProjects([]);
     }
   };
 
@@ -50,7 +55,6 @@ const ProjectManagement = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("authToken");
-      console.log("Token being sent:", token);
 
       if (editingProject) {
         // Update existing project
@@ -61,8 +65,7 @@ const ProjectManagement = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        console.log("Project updated response:", response);
-        alert("Project updated successfully!");
+        toast.success("Project updated successfully!"); // Toast for success
       } else {
         // Create new project
         const response = await axios.post(
@@ -72,8 +75,7 @@ const ProjectManagement = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        console.log("Project created response:", response);
-        alert("Project assigned successfully!");
+        toast.success("Project assigned successfully!"); // Toast for success
       }
 
       setFormData({
@@ -87,10 +89,7 @@ const ProjectManagement = () => {
       fetchProjects(); // Refresh the projects list
     } catch (error) {
       console.error("Error submitting project:", error);
-      alert(
-        "Error submitting project: " + error.response?.data?.message ||
-          error.message
-      );
+      toast.error("Error submitting project: " + error.message); // Toast for error
     }
   };
 
@@ -103,6 +102,38 @@ const ProjectManagement = () => {
       startDate: project.startDate.split("T")[0],
       endDate: project.endDate.split("T")[0],
       projectHead: project.projectHead || "",
+    });
+  };
+
+  // Handle delete button click with confirmation alert
+  const handleDelete = (projectId) => {
+    confirmAlert({
+      title: "Confirm Delete",
+      message: "Are you sure you want to delete this project?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: async () => {
+            try {
+              const token = localStorage.getItem("authToken");
+              await axios.delete(
+                `http://localhost:8082/Projects/deleteProject/${projectId}`,
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                }
+              );
+              toast.success("Project deleted successfully!"); // Toast for success
+              fetchProjects(); // Refresh the projects list
+            } catch (error) {
+              console.error("Error deleting project:", error);
+              toast.error(error.response?.data?.message || error.message); // Toast for error
+            }
+          },
+        },
+        {
+          label: "No",
+        },
+      ],
     });
   };
 
@@ -246,9 +277,15 @@ const ProjectManagement = () => {
                   </p>
                   <button
                     onClick={() => handleEdit(project)}
-                    className="mt-4 w-full bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                    className="my-4 w-1/4 bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400"
                   >
                     Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(project._id)}
+                    className="m-4 w-1/4 bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                  >
+                    Delete
                   </button>
                 </div>
               ))

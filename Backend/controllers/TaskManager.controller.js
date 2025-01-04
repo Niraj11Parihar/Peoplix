@@ -72,4 +72,29 @@ const updateTaskStatus = async (req, res) => {
 };
 
 
-module.exports = { assignTask, getTasksByEmployee, updateTaskStatus };
+const deleteTask = async (req, res) => {
+  const { taskId } = req.params;
+  const { id} = req.user; // Get role and position from the authenticated user
+  try {
+    // Check if the user is a Project Manager
+    const user = await EmpModel.findById(id);
+    if (user.position !== "Project Manager") {
+      return res.status(403).json({ message: "You do not have permission to delete tasks" });
+    }
+
+    const task = await TaskModel.findByIdAndDelete(taskId);
+
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    res.status(200).json({ message: "Task deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error deleting task" });
+  }
+};
+
+
+
+module.exports = { assignTask, getTasksByEmployee, updateTaskStatus, deleteTask };

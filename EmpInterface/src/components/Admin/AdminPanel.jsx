@@ -131,14 +131,14 @@ function AdminPanel() {
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-between items-start mt-8 gap-6">
+        <div className="lg:flex  mt-8 gap-6">
           {/* Recently Joined Employees Table */}
           <div className="w-full">
             <RecentlyJoinedEmp />
           </div>
 
           {/* Employee Stream Pie Chart */}
-          <div className="w-full sm:w-1/2 lg:w-full">
+          <div className="mt-8 w-full lg:w-1/4 lg:m-0">
             <EmployeeStreamPieChart />
           </div>
         </div>

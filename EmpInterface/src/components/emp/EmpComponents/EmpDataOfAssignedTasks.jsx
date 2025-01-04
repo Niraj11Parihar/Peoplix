@@ -42,6 +42,18 @@ const AssignedTaskList = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
 
+  // Handle task deletion
+  const handleDelete = async (taskId) => {
+    try {
+      const token = localStorage.getItem("authToken");
+      await axios.delete(`http://localhost:8082/TaskManager/deleteTask/${taskId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTasks(tasks.filter((task) => task._id !== taskId)); // Remove the deleted task from the state
+    } catch (err) {
+      setError("Error deleting task.");
+    }
+  };
 
   return (
     <div className="bg-gray-500 bg-opacity-15 p-5 shadow-md rounded-lg w-full lg:mt-0">
@@ -77,8 +89,14 @@ const AssignedTaskList = () => {
                   <strong>Project Head:</strong> {task.projectHead}
                 </p>
                 <p className="text-gray-600">
-                  <strong >Status:</strong> {task.status || "Pending"}
+                  <strong>Status:</strong> {task.status || "Pending"}
                 </p>
+                <button
+                  onClick={() => handleDelete(task._id)}
+                  className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                >
+                  Delete
+                </button>
               </div>
             ))}
           </div>
