@@ -96,32 +96,30 @@ const EmployeeStreamPieChart = () => {
   };
 
   return (
-    <div className="w-full md:w-1/3 lg:w-1/4 xl:w-1/4 h-1/3 mt-8">
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="p-6 bg-gradient-to-r from-blue-400 to-indigo-500">
-          <h3 className="text-center font-bold text-xl text-white">Employee Position Stream</h3>
-        </div>
-        <div className=" py-3 px-4 flex justify-center">
-          <Pie
-            data={chartData}
-            options={{
-              plugins: {
-                legend: {
-                  display: false,
-                },
-                tooltip: {
-                  callbacks: {
-                    label: (tooltipItem) => {
-                      return `${tooltipItem.raw} Employees`;
-                    },
-                  },
-                },
-              },
-            }}
-          />
-        </div>
-      </div>
+    <div className="w-full md:w-1/2 lg:w-1/3 xl:w-1/3">
+  <div className="bg-white rounded-lg shadow-xl overflow-hidden">
+    <div className="p-6 bg-gradient-to-r from-blue-500 to-indigo-600">
+      <h3 className="text-center font-bold text-xl text-white">
+        Employee Position Distribution
+      </h3>
     </div>
+    <div className="py-6 px-4 flex justify-center">
+      <Pie
+        data={chartData}
+        options={{
+          plugins: {
+            legend: {
+              display: false,
+            }
+          },
+          maintainAspectRatio: false,
+        }}
+        style={{ height: "219px" }}
+      />
+    </div>
+  </div>
+</div>
+
   );
 };
 

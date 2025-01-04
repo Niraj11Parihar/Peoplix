@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "../../features/Layout";
 import EmployeeStreamPieChart from "../AdminComponents/EmpStreamChart";
+import RecentlyJoinedEmp from "../AdminComponents/RecentlyJoinedEmp";
 
 function AdminPanel() {
   const [attendanceData, setAttendanceData] = useState([]);
   const [attendancePercentage, setAttendancePercentage] = useState(0);
   const [attendancePerformance, setAttendancePerformance] = useState("");
-  const [liveProjectsCount, setLiveProjectsCount] = useState(0); // Add state for live projects
+  const [liveProjectsCount, setLiveProjectsCount] = useState(0);
 
-  // Fetch attendance data
   useEffect(() => {
     const fetchAttendanceData = async () => {
       try {
@@ -33,7 +33,6 @@ function AdminPanel() {
     fetchAttendanceData();
   }, []);
 
-  // Fetch project data
   useEffect(() => {
     const fetchProjects = async () => {
       try {
@@ -48,11 +47,10 @@ function AdminPanel() {
         );
 
         const projects = response.data.projects || [];
-        // Count projects with tasks or ongoing status
         const liveProjects = projects.filter(
-          (project) => projects?.length > 0 // Assuming live projects have tasks
+          (project) => project.Projectstatus === "In Progress"
         );
-        setLiveProjectsCount(liveProjects.length); // Set the count of live projects
+        setLiveProjectsCount(liveProjects.length);
       } catch (error) {
         console.error("Error fetching projects:", error);
       }
@@ -61,23 +59,17 @@ function AdminPanel() {
     fetchProjects();
   }, []);
 
-  // Calculate attendance performance
   const calculateAttendancePerformance = (records) => {
     const totalEmployees = records.length;
-
     const presentCount = records.reduce((count, record) => {
-      if (record.status === "Present") {
-        return count + 1;
-      } else if (record.status === "Half Day") {
-        return count + 0.5;
-      } else if (record.status === "Leave") {
-        return count + 1;
-      }
-      return count; // Exclude "Leave" or other statuses
+      if (record.status === "Present") return count + 1;
+      if (record.status === "Half Day") return count + 0.5;
+      if (record.status === "Leave") return count + 1;
+      return count;
     }, 0);
 
     const percentage = (presentCount / totalEmployees) * 100;
-    setAttendancePercentage(percentage.toFixed(2)); // Set percentage with two decimal places
+    setAttendancePercentage(percentage.toFixed(2));
 
     if (percentage >= 90) {
       setAttendancePerformance("Excellent");
@@ -90,13 +82,13 @@ function AdminPanel() {
 
   return (
     <Layout>
-      <div className="px-6 py-4 min-h-screen bg-gradient-to-r from-blue-100 to-blue-300">
+      <div className="px-4 py-6 min-h-screen bg-gradient-to-r from-blue-100 to-blue-300">
         <h1 className="text-3xl font-bold text-gray-700 mb-6">
           Welcome to Admin Dashboard
         </h1>
 
         {/* Grid for Boxes */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Salary Box */}
           <div className="bg-gradient-to-br from-teal-500 to-cyan-500 shadow-lg rounded-lg p-4 text-center transform transition-transform duration-300 hover:scale-105">
             <h2 className="text-xl font-semibold text-white">Salary</h2>
@@ -106,8 +98,12 @@ function AdminPanel() {
           {/* Attendance Box */}
           <div className="bg-gradient-to-br from-orange-500 to-yellow-500 shadow-lg rounded-lg p-4 text-center transform transition-transform duration-300 hover:scale-105">
             <h2 className="text-xl font-semibold text-white">Attendance</h2>
-            <p className="text-white text-lg mt-2">{attendancePercentage}% Present</p>
-            <p className="text-white text-sm mt-1">Performance: {attendancePerformance}</p>
+            <p className="text-white text-lg mt-2">
+              {attendancePercentage}% Present
+            </p>
+            <p className="text-white text-sm mt-1">
+              Performance: {attendancePerformance}
+            </p>
           </div>
 
           {/* Leaves Box */}
@@ -125,12 +121,27 @@ function AdminPanel() {
 
         {/* Main Dashboard Content */}
         <div className="bg-white shadow-md rounded-lg mt-8 p-6 transform transition-transform duration-300 hover:scale-101">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Employee Management</h2>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+            Employee Management
+          </h2>
           <p className="text-gray-600">
-            Manage all aspects of your employee data, including salary, attendance, leaves, and more. Explore detailed statistics and insights.
+            Manage all aspects of your employee data, including salary,
+            attendance, leaves, and more. Explore detailed statistics and
+            insights.
           </p>
         </div>
-        <EmployeeStreamPieChart/>
+
+        <div className="flex flex-col sm:flex-row justify-between items-start mt-8 gap-6">
+          {/* Recently Joined Employees Table */}
+          <div className="w-full">
+            <RecentlyJoinedEmp />
+          </div>
+
+          {/* Employee Stream Pie Chart */}
+          <div className="w-full sm:w-1/2 lg:w-full">
+            <EmployeeStreamPieChart />
+          </div>
+        </div>
       </div>
     </Layout>
   );

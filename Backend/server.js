@@ -12,7 +12,7 @@ const app = express();
 
 // Apply CORS middleware before defining routes
 app.use(cors({
-  origin: ['http://localhost:5174','http://localhost:5173'], 
+  origin: ['http://localhost:4111'], 
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'], 
 }));
