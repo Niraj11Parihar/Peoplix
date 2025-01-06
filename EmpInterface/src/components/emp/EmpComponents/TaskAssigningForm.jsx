@@ -305,7 +305,7 @@ const TaskAssigningForm = ({ projects }) => {
           </form>
         </>
       ) : (
-        <form onSubmit={handleStatusSubmit} className="space-y-4">
+        <form onSubmit={handleStatusSubmit} className="space-y-4 ">
           <div>
             <label className="block text-gray-700">Select Task</label>
             <select

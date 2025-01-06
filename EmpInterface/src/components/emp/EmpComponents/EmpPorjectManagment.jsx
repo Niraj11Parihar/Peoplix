@@ -36,7 +36,7 @@ const EmpProjectManagement = () => {
       <div className="flex flex-col lg:flex-row items-start lg:items-center h-full w-full p-6 space-y-6 lg:space-y-0 lg:space-x-6">
         {/* Assigned Projects Section */}
         <AssignedProjectsList projects={projects} error={error} />
-
+        
         {/* Task Assignment Form */}
         <div className="bg-gray-500 bg-opacity-15 p-5 shadow-md rounded-lg w-full lg:w-2/3">
           <TaskAssigningForm projects={projects} />

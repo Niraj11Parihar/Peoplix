@@ -15,7 +15,7 @@ const taskSchema = new mongoose.Schema({
   },
   projectName: {
     type: String,
-    ref: "Project", // Reference to the Project model
+    ref: "Project",
     required: true,
   },
   projectHead: {

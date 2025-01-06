@@ -3,6 +3,8 @@ import axios from "axios";
 import Layout from "../../features/Layout";
 import EmployeeStreamPieChart from "../AdminComponents/EmpStreamChart";
 import RecentlyJoinedEmp from "../AdminComponents/RecentlyJoinedEmp";
+import TaskFrequencyChart from "../AdminComponents/TaskFrequencyChart";
+import ProjectTaskTable from "../AdminComponents/ProjectworkOverview";
 
 function AdminPanel() {
   const [attendanceData, setAttendanceData] = useState([]);
@@ -131,6 +133,19 @@ function AdminPanel() {
           </p>
         </div>
 
+        <div className="lg:flex  mt-8 gap-6">
+          {/* Chart of Task Frequency */}
+          <div className="w-full   lg:w-1/2 ">
+            <TaskFrequencyChart />
+          </div>
+
+          {/* Employee Stream Pie Chart */}
+          <div className="mt-8 w-full lg:w-1/2 lg:m-0">
+            {/* Project work overview /> */}
+            <ProjectTaskTable/>
+          </div>
+        </div>
+        
         <div className="lg:flex  mt-8 gap-6">
           {/* Recently Joined Employees Table */}
           <div className="w-full">

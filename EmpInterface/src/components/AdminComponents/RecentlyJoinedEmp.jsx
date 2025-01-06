@@ -18,7 +18,7 @@ const RecentlyJoinedEmployees = () => {
       // Assuming response contains an array of employees with "joiningDate"
       const sortedEmployees = response.data
         .sort((a, b) => new Date(b.joiningDate) - new Date(a.joiningDate)) // Sort by joiningDate descending
-        .slice(0, 7); // Fetch the most recent 5 employees
+        .slice(0, 6); // Fetch the most recent 5 employees
       setEmployees(sortedEmployees);
     } catch (error) {
       toast.error("Failed to load recently joined employees.");

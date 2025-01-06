@@ -18,7 +18,7 @@ const AssignedTaskList = () => {
         }
       );
       setTasks(response.data.tasks);
-      setError(null); // Clear any previous errors
+      setError(null); 
     } catch (err) {
       setError("Error fetching tasks.");
     }

@@ -2,7 +2,8 @@ const EmpModel = require("../model/Emp.model");
 const TaskModel = require("../model/Task.model");
 
 const assignTask = async (req, res) => {
-  const { taskName, projectName, deadline, employeeName, projectHead } = req.body;
+  const { taskName, projectName, deadline, employeeName, projectHead } =
+    req.body;
 
   try {
     const newTask = new TaskModel({
@@ -16,7 +17,9 @@ const assignTask = async (req, res) => {
 
     await newTask.save();
 
-    res.status(201).json({ message: "Task assigned successfully", task: newTask });
+    res
+      .status(201)
+      .json({ message: "Task assigned successfully", task: newTask });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error assigning task" });
@@ -31,11 +34,41 @@ const getTasksByEmployee = async (req, res) => {
     let tasks = [];
 
     if (role === "employee" && user.position === "Project Manager") {
-      // Fetch tasks for project manager
       tasks = await TaskModel.find({ projectHead: user.name });
     } else if (role === "employee") {
-      // Fetch tasks for assigned employee
-      tasks = await TaskModel.find({ employeeName: user.name }).populate("projectHead");
+      tasks = await TaskModel.find({ employeeName: user.name }).populate(
+        "projectHead"
+      );
+    } else if (role === "admin") {
+      tasks = await TaskModel.aggregate([
+        {
+          $lookup: {
+            from: "projects",
+            localField: "projectName",
+            foreignField: "projectName",
+            as: "projectData",
+          },
+        },
+        {
+          $unwind: {
+            path: "$projectData",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            taskName: 1,
+            projectHead: 1,
+            employeeName: 1,
+            projectName: 1,
+            status: 1,
+            clientName: "$projectData.clientName",
+            startDate: "$projectData.startDate",
+            endDate: "$projectData.endDate",
+          },
+        },
+      ]);
     }
 
     if (tasks.length === 0) {
@@ -48,7 +81,6 @@ const getTasksByEmployee = async (req, res) => {
     res.status(500).json({ message: "Error fetching tasks" });
   }
 };
-
 
 // Controller to update task status
 const updateTaskStatus = async (req, res) => {
@@ -71,15 +103,16 @@ const updateTaskStatus = async (req, res) => {
   }
 };
 
-
 const deleteTask = async (req, res) => {
   const { taskId } = req.params;
-  const { id} = req.user; // Get role and position from the authenticated user
+  const { id } = req.user; // Get role and position from the authenticated user
   try {
     // Check if the user is a Project Manager
     const user = await EmpModel.findById(id);
     if (user.position !== "Project Manager") {
-      return res.status(403).json({ message: "You do not have permission to delete tasks" });
+      return res
+        .status(403)
+        .json({ message: "You do not have permission to delete tasks" });
     }
 
     const task = await TaskModel.findByIdAndDelete(taskId);
@@ -95,6 +128,9 @@ const deleteTask = async (req, res) => {
   }
 };
 
-
-
-module.exports = { assignTask, getTasksByEmployee, updateTaskStatus, deleteTask };
+module.exports = {
+  assignTask,
+  getTasksByEmployee,
+  updateTaskStatus,
+  deleteTask,
+};
