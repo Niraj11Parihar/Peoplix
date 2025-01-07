@@ -6,7 +6,6 @@ import { toast } from "react-toastify"; // Import toast
 import "react-toastify/dist/ReactToastify.css"; // Import toast CSS
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import the confirm alert CSS
 
-
 const ProjectManagement = () => {
   const [formData, setFormData] = useState({
     projectName: "",
@@ -139,17 +138,17 @@ const ProjectManagement = () => {
 
   return (
     <Layout>
-      <div className=" min-h-full w-full py-8 px-4">
+      <div className="min-h-full w-full py-8 px-4 bg-gray-100">
         {/* Assignment Form */}
-        <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-lg mx-auto mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-gray-700">
+        <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-lg mx-auto mb-12">
+          <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
             {editingProject ? "Edit Project" : "Assign a Project"}
           </h2>
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
               <label
                 htmlFor="projectName"
-                className="block text-gray-600 font-medium"
+                className="block text-gray-700 font-semibold mb-2"
               >
                 Project Name
               </label>
@@ -159,14 +158,14 @@ const ProjectManagement = () => {
                 value={formData.projectName}
                 onChange={handleChange}
                 required
-                className="w-full mt-2 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full mt-1 p-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
 
-            <div className="mb-4">
+            <div>
               <label
                 htmlFor="clientName"
-                className="block text-gray-600 font-medium"
+                className="block text-gray-700 font-semibold mb-2"
               >
                 Client Name
               </label>
@@ -176,14 +175,14 @@ const ProjectManagement = () => {
                 value={formData.clientName}
                 onChange={handleChange}
                 required
-                className="w-full mt-2 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full mt-1 p-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
 
-            <div className="mb-4">
+            <div>
               <label
                 htmlFor="startDate"
-                className="block text-gray-600 font-medium"
+                className="block text-gray-700 font-semibold mb-2"
               >
                 Start Date
               </label>
@@ -193,14 +192,14 @@ const ProjectManagement = () => {
                 value={formData.startDate}
                 onChange={handleChange}
                 required
-                className="w-full mt-2 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full mt-1 p-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
 
-            <div className="mb-4">
+            <div>
               <label
                 htmlFor="endDate"
-                className="block text-gray-600 font-medium"
+                className="block text-gray-700 font-semibold mb-2"
               >
                 End Date
               </label>
@@ -210,14 +209,14 @@ const ProjectManagement = () => {
                 value={formData.endDate}
                 onChange={handleChange}
                 required
-                className="w-full mt-2 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full mt-1 p-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
 
-            <div className="mb-4">
+            <div>
               <label
                 htmlFor="projectHead"
-                className="block text-gray-600 font-medium"
+                className="block text-gray-700 font-semibold mb-2"
               >
                 Project Head (Name)
               </label>
@@ -228,13 +227,13 @@ const ProjectManagement = () => {
                 onChange={handleChange}
                 placeholder="Enter Project Head Name"
                 required
-                className="w-full mt-2 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full mt-1 p-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full bg-blue-500 text-white py-3 px-6 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               {editingProject ? "Update Project" : "Assign Project"}
             </button>
@@ -243,54 +242,55 @@ const ProjectManagement = () => {
 
         {/* Project Cards */}
         <div className="container mx-auto">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+          <h2 className="text-2xl font-bold mb-8 text-gray-800 text-center">
             Project List
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects?.length > 0 ? (
               projects.map((project) => (
                 <div
                   key={project._id}
-                  className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
+                  className="relative bg-white shadow-lg rounded-xl p-6 border border-gray-200 hover:shadow-xl transition-shadow duration-300"
                 >
-                  <h3 className="text-lg font-bold text-gray-800">
+                  <div className="absolute top-4 right-4 text-xs font-semibold px-2 py-1 rounded-full bg-gray-200 text-gray-800">
+                    {project.Projectstatus}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-3">
                     {project.projectName}
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-700 mb-2">
                     <strong>Client:</strong> {project.clientName}
                   </p>
-                  <p className="text-gray-600">
+                  <p className="text-gray-700 mb-2">
                     <strong>Start Date:</strong>{" "}
                     {new Date(project.startDate).toLocaleDateString()}
                   </p>
-                  <p className="text-gray-600">
+                  <p className="text-gray-700 mb-2">
                     <strong>End Date:</strong>{" "}
                     {new Date(project.endDate).toLocaleDateString()}
                   </p>
-                  <p className="text-gray-600">
+                  <p className="text-gray-700 mb-4">
                     <strong>Project Head:</strong>{" "}
                     {project.projectHead || "Not Assigned"}
                   </p>
-                  <p className="text-gray-600">
-                    <strong>Status:</strong>{" "}
-                    {project.Projectstatus}
-                  </p>
-                  <button
-                    onClick={() => handleEdit(project)}
-                    className="my-4 w-1/4 bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(project._id)}
-                    className="m-4 w-1/4 bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
-                  >
-                    Delete
-                  </button>
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => handleEdit(project)}
+                      className="flex-1 bg-yellow-400 text-white py-2 px-4 rounded-lg hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(project._id)}
+                      className="flex-1 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))
             ) : (
-              <p className="text-gray-600 col-span-1 md:col-span-2 lg:col-span-3">
+              <p className="text-gray-600 col-span-1 md:col-span-2 lg:col-span-3 text-center">
                 No projects found.
               </p>
             )}

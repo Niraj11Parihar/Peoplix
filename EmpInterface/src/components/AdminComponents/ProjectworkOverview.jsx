@@ -30,7 +30,7 @@ const ProjectTaskTable = () => {
 
   return (
     <div className="my-8">
-  <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-300">
+  <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-300 h-[54.2vh] overflow-y-scroll">
     <h2 className="text-center text-3xl font-semibold text-gray-800 mb-6">Project & Task Overview</h2>
     <table className="min-w-full table-auto">
       <thead>
