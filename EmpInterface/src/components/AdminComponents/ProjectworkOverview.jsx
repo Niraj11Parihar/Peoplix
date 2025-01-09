@@ -11,7 +11,7 @@ const ProjectTaskTable = () => {
     const fetchTasks = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        const response = await axios.get("http://localhost:8082/TaskManager/getTasks", {
+        const response = await axios.get("http://localhost:8011/TaskManager/getTasks", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setTasks(response.data.tasks);

@@ -19,7 +19,7 @@ const EmpProjectManagement = () => {
         }
 
         const response = await axios.get(
-          "http://localhost:8082/Projects/getProjects",
+          "http://localhost:8011/Projects/getProjects",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setProjects(response.data.projects);

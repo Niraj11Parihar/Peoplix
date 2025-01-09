@@ -40,7 +40,7 @@ function SecondRegistrationPage() {
       const finalData = { ...storedData, ...formData }; // Merge stored data with form data
 
       const response = await axios.post(
-        "http://localhost:8082/auth/register",
+        "http://localhost:8011/auth/register",
         finalData
       );
 

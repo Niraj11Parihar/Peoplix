@@ -13,7 +13,7 @@ const AttendanceTodo = () => {
   const fetchEmployees = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8082/Attendance/getAttendance"
+        "http://localhost:8011/Attendance/getAttendance"
       );
       setEmployees(response.data); // Set employee data
     } catch (err) {
@@ -35,7 +35,7 @@ const AttendanceTodo = () => {
   const saveAttendance = async () => {
     try {
       await axios.post(
-        "http://localhost:8082/Attendance/postAttendance",
+        "http://localhost:8011/Attendance/postAttendance",
         attendance
       );
       toast.success("Attendance saved/updated successfully!");

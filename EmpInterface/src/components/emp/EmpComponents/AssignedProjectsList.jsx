@@ -15,7 +15,7 @@ const AssignedProjectsList = ({ projects, error }) => {
 
       // Fetch user position (e.g., projectManager, employee, etc.)
       const userResponse = await axios.get(
-        "http://localhost:8082/Emp/getEmployees", 
+        "http://localhost:8011/Emp/getEmployees", 
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setUserPosition(userResponse.data.position); // Assume position is available in user data

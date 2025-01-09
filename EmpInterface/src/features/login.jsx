@@ -21,7 +21,7 @@ function LoginPage() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8082/auth/login",
+        "http://localhost:8011/auth/login",
         formData
       );
 

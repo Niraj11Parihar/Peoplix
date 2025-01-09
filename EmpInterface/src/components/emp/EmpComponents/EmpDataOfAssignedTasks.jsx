@@ -12,7 +12,7 @@ const AssignedTaskList = () => {
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.get(
-        "http://localhost:8082/TaskManager/getTasks",
+        "http://localhost:8011/TaskManager/getTasks",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -46,7 +46,7 @@ const AssignedTaskList = () => {
   const handleDelete = async (taskId) => {
     try {
       const token = localStorage.getItem("authToken");
-      await axios.delete(`http://localhost:8082/TaskManager/deleteTask/${taskId}`, {
+      await axios.delete(`http://localhost:8011/TaskManager/deleteTask/${taskId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTasks(tasks.filter((task) => task._id !== taskId)); // Remove the deleted task from the state

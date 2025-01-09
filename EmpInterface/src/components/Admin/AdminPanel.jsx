@@ -17,7 +17,7 @@ function AdminPanel() {
       try {
         const token = localStorage.getItem("authToken");
         const response = await axios.get(
-          "http://localhost:8082/Attendance/getAttendanceRecords",
+          "http://localhost:8011/Attendance/getAttendanceRecords",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -40,7 +40,7 @@ function AdminPanel() {
       try {
         const token = localStorage.getItem("authToken");
         const response = await axios.get(
-          "http://localhost:8082/Projects/getProjects",
+          "http://localhost:8011/Projects/getProjects",
           {
             headers: {
               Authorization: `Bearer ${token}`,

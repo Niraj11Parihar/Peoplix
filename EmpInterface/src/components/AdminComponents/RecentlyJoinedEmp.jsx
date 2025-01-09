@@ -9,7 +9,7 @@ const RecentlyJoinedEmployees = () => {
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.get(
-        "http://localhost:8082/Emp/getEmployees", // Adjust the endpoint if necessary
+        "http://localhost:8011/Emp/getEmployees", // Adjust the endpoint if necessary
         {
           headers: { Authorization: "Bearer " + token },
         }

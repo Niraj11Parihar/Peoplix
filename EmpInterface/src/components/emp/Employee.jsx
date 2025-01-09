@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EmpLayout from "./EmpComponents/EmpLayout";
 import axios from "axios";
+import TaskTable from "./EmpComponents/EmpTaskTable";
 
 const Employee = () => {
   const [attendanceData, setAttendanceData] = useState({});
@@ -24,7 +25,7 @@ const Employee = () => {
       }
 
       const response = await axios.get(
-        "http://localhost:8082/Attendance/getAttendanceRecords",
+        "http://localhost:8011/Attendance/getAttendanceRecords",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -109,9 +110,11 @@ const Employee = () => {
         <div className="bg-pink-500 text-white rounded-lg p-4 shadow-lg">
           <h2 className="text-lg font-semibold">Leaves</h2>
           <p className="text-xl">
-            {(attendanceData[currentMonth] || []).filter(
-              (record) => record.status === "Leave"
-            ).length}{" "}
+            {
+              (attendanceData[currentMonth] || []).filter(
+                (record) => record.status === "Leave"
+              ).length
+            }{" "}
             Days
           </p>
         </div>
@@ -121,56 +124,63 @@ const Employee = () => {
         </div>
       </div>
 
-      {/* Attendance calendar for employees  */}
-      <div className="mt-8 w-1/5 bg-white bg-opacity-50 p-3 rounded-lg">
-        <h2 className="text-xl font-semibold mb-4 text-center">Attendance Calendar</h2>
-        <div className="flex justify-between mb-4">
-          <button
-            onClick={() => changeMonth(-1)}
-            className="bg-gray-700 text-white px-4 py-2 rounded-lg"
-          >
-            Previous
-          </button>
-          <h3 className="text-xl font-bold">
-            {new Date(2022, currentMonth).toLocaleString("default", {
-              month: "long",
-            })}
-          </h3>
-          <button
-            onClick={() => changeMonth(1)}
-            className="bg-gray-700 text-white px-4 py-2 rounded-lg"
-          >
-            Next
-          </button>
-        </div>
-        <div className="p-4 rounded-lg">
-          <div className="grid grid-cols-7 gap-2">
-            {(
-              attendanceData[currentMonth] || []
-            ).map((record, index) => {
-              const date = new Date(record.date).getDate();
-              const status = record.status;
-              const statusClass =
-                status === "Present"
-                  ? "bg-green-500"
-                  : status === "Absent"
-                  ? "bg-red-500"
-                  : status === "Leave"
-                  ? "bg-blue-500"
-                  : status === "Half Day"
-                  ? "bg-yellow-500"
-                  : "bg-gray-500";
-
-              return (
-                <div
-                  key={index}
-                  className={`p-2 rounded-md text-center ${statusClass} text-white`}
-                >
-                  {date}
-                </div>
-              );
-            })}
+      <div className="flex flex-col lg:flex-row gap-6 mt-8">
+        {/* Attendance calendar for employees */}
+        <div className="w-full lg:w-1/3 bg-white bg-opacity-50 p-4 rounded-lg shadow-lg h-[30vh]">
+          <h2 className="text-xl font-semibold mb-4 text-center">
+            Attendance Calendar
+          </h2>
+          <div className="flex justify-between mb-4">
+            <button
+              onClick={() => changeMonth(-1)}
+              className="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition duration-200"
+            >
+              Previous
+            </button>
+            <h3 className="text-xl font-bold">
+              {new Date(2022, currentMonth).toLocaleString("default", {
+                month: "long",
+              })}
+            </h3>
+            <button
+              onClick={() => changeMonth(1)}
+              className="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition duration-200"
+            >
+              Next
+            </button>
           </div>
+          <div className="p-4 rounded-lg">
+            <div className="grid grid-cols-7 gap-2">
+              {(attendanceData[currentMonth] || []).map((record, index) => {
+                const date = new Date(record.date).getDate();
+                const status = record.status;
+                const statusClass =
+                  status === "Present"
+                    ? "bg-green-500"
+                    : status === "Absent"
+                    ? "bg-red-500"
+                    : status === "Leave"
+                    ? "bg-blue-500"
+                    : status === "Half Day"
+                    ? "bg-yellow-500"
+                    : "bg-gray-500";
+
+                return (
+                  <div
+                    key={index}
+                    className={`p-2 rounded-md text-center ${statusClass} text-white`}
+                  >
+                    {date}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Task Table */}
+        <div className="w-full lg:w-2/3">
+          <TaskTable />
         </div>
       </div>
     </EmpLayout>

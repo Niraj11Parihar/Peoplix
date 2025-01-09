@@ -34,12 +34,48 @@ const getTasksByEmployee = async (req, res) => {
     let tasks = [];
 
     if (role === "employee" && user.position === "Project Manager") {
-      tasks = await TaskModel.find({ projectHead: user.name });
+      // Fetch tasks for Project Manager with project details
+      tasks = await TaskModel.aggregate([
+        {
+          $match: {
+            projectHead: user.name,
+          },
+        },
+        {
+          $lookup: {
+            from: "projects",
+            localField: "projectName",
+            foreignField: "projectName",
+            as: "projectData",
+          },
+        },
+        {
+          $unwind: {
+            path: "$projectData",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            taskName: 1,
+            projectHead: 1,
+            employeeName: 1,
+            projectName: 1,
+            status: 1,
+            clientName: "$projectData.clientName",
+            startDate: "$projectData.startDate",
+            endDate: "$projectData.endDate",
+          },
+        },
+      ]);
     } else if (role === "employee") {
+      // Fetch tasks for normal employees
       tasks = await TaskModel.find({ employeeName: user.name }).populate(
         "projectHead"
       );
     } else if (role === "admin") {
+      // Fetch tasks for admin
       tasks = await TaskModel.aggregate([
         {
           $lookup: {
@@ -82,6 +118,7 @@ const getTasksByEmployee = async (req, res) => {
   }
 };
 
+
 // Controller to update task status
 const updateTaskStatus = async (req, res) => {
   const { taskId, status } = req.body;
@@ -105,7 +142,7 @@ const updateTaskStatus = async (req, res) => {
 
 const deleteTask = async (req, res) => {
   const { taskId } = req.params;
-  const { id } = req.user; // Get role and position from the authenticated user
+  const { id } = req.user; 
   try {
     // Check if the user is a Project Manager
     const user = await EmpModel.findById(id);

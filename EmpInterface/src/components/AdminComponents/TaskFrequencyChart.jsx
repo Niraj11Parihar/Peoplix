@@ -34,7 +34,7 @@ const TaskFrequencyChart = () => {
       try {
         const token = localStorage.getItem("authToken");
         const response = await axios.get(
-          "http://localhost:8082/TaskManager/getTasks",
+          "http://localhost:8011/TaskManager/getTasks",
           {
             headers: { Authorization: `Bearer ${token}` },
           }

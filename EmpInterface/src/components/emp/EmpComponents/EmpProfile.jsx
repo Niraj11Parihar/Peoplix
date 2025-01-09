@@ -21,7 +21,7 @@ const EmployeeProfile = () => {
 
         // Fetch the employee profile from the backend
         const response = await axios.get(
-          "http://localhost:8082/Emp/getEmployees",
+          "http://localhost:8011/Emp/getEmployees",
           {
             headers: {
               Authorization: `Bearer ${token}`,

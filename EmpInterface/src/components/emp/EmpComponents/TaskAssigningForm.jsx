@@ -33,7 +33,7 @@ const TaskAssigningForm = ({ projects }) => {
 
       // Fetch employee's profile data (including position)
       const response = await axios.get(
-        "http://localhost:8082/Emp/getEmployees",
+        "http://localhost:8011/Emp/getEmployees",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -43,7 +43,7 @@ const TaskAssigningForm = ({ projects }) => {
 
       // Fetch all employees data
       const employeesResponse = await axios.get(
-        "http://localhost:8082/Emp/getAllEmployees",
+        "http://localhost:8011/Emp/getAllEmployees",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -52,7 +52,7 @@ const TaskAssigningForm = ({ projects }) => {
 
       // Fetch all tasks for status update
       const tasksResponse = await axios.get(
-        "http://localhost:8082/TaskManager/getTasks",
+        "http://localhost:8011/TaskManager/getTasks",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -99,7 +99,7 @@ const TaskAssigningForm = ({ projects }) => {
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.post(
-        "http://localhost:8082/TaskManager/assign",
+        "http://localhost:8011/TaskManager/assign",
         taskData,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -126,7 +126,7 @@ const TaskAssigningForm = ({ projects }) => {
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.patch(
-        "http://localhost:8082/TaskManager/updateStatus",
+        "http://localhost:8011/TaskManager/updateStatus",
         { taskId: selectedTask, status: taskStatus },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -147,7 +147,7 @@ const TaskAssigningForm = ({ projects }) => {
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.patch(
-        `http://localhost:8082/Projects/updateProject/${selectedProject}`,
+        `http://localhost:8011/Projects/updateProject/${selectedProject}`,
         { Projectstatus : Projectstatus },
         {
           headers: { Authorization: `Bearer ${token}` },

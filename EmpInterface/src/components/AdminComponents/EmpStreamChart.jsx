@@ -26,7 +26,7 @@ const EmployeeStreamPieChart = () => {
   const fetchEmployees = useCallback(async () => {
     try {
       const token = localStorage.getItem("authToken");
-      const response = await axios.get("http://localhost:8082/Emp/getEmployees", {
+      const response = await axios.get("http://localhost:8011/Emp/getEmployees", {
         headers: { Authorization: "Bearer " + token },
       });
 

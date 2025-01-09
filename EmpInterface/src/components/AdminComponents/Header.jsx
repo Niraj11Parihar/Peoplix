@@ -20,11 +20,14 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
           return;
         }
 
-        const response = await axios.get("http://localhost:8082/admin/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          "http://localhost:8011/admin/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         setProfileImage(response.data.profileImage);
         setUserName(response.data.name);
@@ -62,14 +65,14 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
         </Link>
       </div>
 
-      <div className="flex items-center space-x-4">
+      <div class="flex items-center space-x-4 bg-gradient-to-r from-site-primary-color to-site-secondary-color rounded-full py-2 px-4">
         <div
-          className="flex items-center space-x-2 cursor-pointer"
+          class="flex items-center space-x-2 cursor-pointer hover:bg-opacity-75"
           onClick={() => navigate("/Profile")}
         >
-          <span className="text-gray-700 hidden lg:block">{userName}</span>
+          <span class="text-site-text-color hidden lg:block">{userName}</span>
           <img
-            className="w-8 h-8 rounded-full"
+            class="w-8 h-8 rounded-full border-2 border-white"
             src={profileImage || "https://via.placeholder.com/150"}
             alt="User"
           />

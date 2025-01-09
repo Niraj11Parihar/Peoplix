@@ -23,7 +23,7 @@ const ProjectManagement = () => {
     try {
       const token = localStorage.getItem("authToken");
       const response = await axios.get(
-        "http://localhost:8082/Projects/getProjects",
+        "http://localhost:8011/Projects/getProjects",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -58,7 +58,7 @@ const ProjectManagement = () => {
       if (editingProject) {
         // Update existing project
         const response = await axios.patch(
-          `http://localhost:8082/Projects/updateProject/${editingProject._id}`,
+          `http://localhost:8011/Projects/updateProject/${editingProject._id}`,
           formData,
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -68,7 +68,7 @@ const ProjectManagement = () => {
       } else {
         // Create new project
         const response = await axios.post(
-          "http://localhost:8082/Projects/CreateProjects",
+          "http://localhost:8011/Projects/CreateProjects",
           formData,
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -116,7 +116,7 @@ const ProjectManagement = () => {
             try {
               const token = localStorage.getItem("authToken");
               await axios.delete(
-                `http://localhost:8082/Projects/deleteProject/${projectId}`,
+                `http://localhost:8011/Projects/deleteProject/${projectId}`,
                 {
                   headers: { Authorization: `Bearer ${token}` },
                 }
@@ -138,7 +138,7 @@ const ProjectManagement = () => {
 
   return (
     <Layout>
-      <div className="min-h-full w-full py-8 px-4 bg-gray-100">
+      <div className="min-h-full w-full py-8 px-4 ">
         {/* Assignment Form */}
         <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-lg mx-auto mb-12">
           <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
@@ -245,7 +245,7 @@ const ProjectManagement = () => {
           <h2 className="text-2xl font-bold mb-8 text-gray-800 text-center">
             Project List
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8">
             {projects?.length > 0 ? (
               projects.map((project) => (
                 <div

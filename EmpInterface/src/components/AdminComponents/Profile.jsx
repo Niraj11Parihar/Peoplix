@@ -30,7 +30,7 @@ const Profile = () => {
         }
 
         const response = await axios.get(
-          "http://localhost:8082/admin/profile",
+          "http://localhost:8011/admin/profile",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -71,7 +71,7 @@ const Profile = () => {
       };
 
       await axios.patch(
-        "http://localhost:8082/admin/updateProfile",
+        "http://localhost:8011/admin/updateProfile",
         updatedData,
         {
           headers: {
