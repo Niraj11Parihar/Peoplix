@@ -6,6 +6,7 @@ import logo from "../../../assets/logo/logo.png";
 
 const EmpHeader = ({ toggleSidebar, isSidebarOpen }) => {
   const [userName, setUserName] = useState("");
+  const [profileImage, setProfileImage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,6 +26,7 @@ const EmpHeader = ({ toggleSidebar, isSidebarOpen }) => {
   
         if (response.data) {
           setUserName(response.data.name);
+          setProfileImage(response.data.image);
         }
   
       } catch (err) {
@@ -63,15 +65,23 @@ const EmpHeader = ({ toggleSidebar, isSidebarOpen }) => {
       </div>
 
       {/* Profile */}
-      <div className="flex items-center space-x-2 cursor-pointer py-2 px-4 rounded-3xl  bg-gradient-to-r from-teal-400 to-rose-300">
-        {userName && (
-          <>
-            <Link to={"/EmpProfile"}><span className="text-gray-700 font-semibold hidden lg:block">{userName}</span></Link>
-          </>
-        )}
-      </div>
+      <div className="flex items-center space-x-2 cursor-pointer py-2 px-4 rounded-3xl bg-gradient-to-r from-teal-400 to-rose-300">
+  {userName && (
+    <>
+      <img
+        src={profileImage}  // Replace with the actual image source
+        alt="Profile"
+        className="w-8 h-8 rounded-full"
+      />
+      <Link to={"/EmpProfile"}>
+        <span className="text-gray-700 font-semibold hidden lg:block">{userName}</span>
+      </Link>
+    </>
+  )}
+</div>
+
     </div>
-  );
+  );  
 };
 
 export default EmpHeader;

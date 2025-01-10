@@ -177,12 +177,12 @@ const Employee = () => {
             </div>
           </div>
         </div>
-
-        {/* Task Table */}
-        <div className="w-full lg:w-2/3">
+        
+      </div>
+      <div className="mt-8">
           <TaskTable />
         </div>
-      </div>
+
     </EmpLayout>
   );
 };

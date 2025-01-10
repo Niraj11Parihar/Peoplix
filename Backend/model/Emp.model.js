@@ -1,4 +1,6 @@
+const { url } = require('inspector');
 const mongoose = require('mongoose');
+const { type } = require('os');
 
 const employeeSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -8,6 +10,7 @@ const employeeSchema = new mongoose.Schema({
   position: { type: String, required: true },
   salary: { type: Number, required: true },
   department: { type: String, required: true },
+  image: {type: String, required: true},
   city: { type: String, required: true },
   country: { type: String, required: true },
   joiningDate: { type: Date, required: true }, // Make sure this is a Date type

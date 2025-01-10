@@ -16,6 +16,7 @@ const addEmployee = async (req, res) => {
       department,
       joiningDate,
       salary,
+      image
     } = req.body;
     const { id: adminId } = req.user; // Use the ID from the decoded token
 
@@ -50,6 +51,7 @@ const addEmployee = async (req, res) => {
       department,
       joiningDate: new Date(joiningDate),
       salary,
+      image,
       adminId, // The admin who created this employee (extracted from token)
     });
 
