@@ -47,7 +47,7 @@ const EmpHeader = ({ toggleSidebar, isSidebarOpen }) => {
     <div className="flex items-center justify-between bg-white h-28 shadow-md px-4 py-3 w-full">
       {/* Logo and Sidebar Toggle */}
       <div className="flex items-center">
-        <img src={logo} alt="Logo" className="h-32" />
+        <img src={logo} alt="Logo" className="h-20" />
         <button className="text-dark p-4" onClick={toggleSidebar}>
           {isSidebarOpen ? (
             <FaArrowRight className="text-2xl" />

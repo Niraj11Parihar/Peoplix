@@ -189,8 +189,16 @@ function EmployeeTable() {
   const filteredEmployees = employees.filter(
     (employee) =>
       employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      employee.email.toLowerCase().includes(searchQuery.toLowerCase())
+      employee.position.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      employee.department.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const employeesByDepartment = employees.reduce((groups, employee) => {
+    const { department } = employee;
+    if (!groups[department]) groups[department] = [];
+    groups[department].push(employee);
+    return groups;
+  }, {});
 
   return (
     <Layout>
@@ -218,74 +226,83 @@ function EmployeeTable() {
         </div>
 
         {/* Employee Card */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredEmployees.length > 0 ? (
-            filteredEmployees.map((employee) => (
-              <div
-              key={employee._id}
-              className="relative bg-white border border-gray-200 rounded-xl shadow-lg p-4 hover:shadow-xl transition-shadow duration-300"
-              onClick={() => handleRowClick(employee)} // Open the modal on card click
-            >
-              {/* Manager Badge */}
-              {employee.position.toLowerCase() === "project manager" && (
-                <span className="absolute top-3 right-3 bg-blue-600 text-white text-sm font-semibold px-3 py-1 rounded-full">
-                  Manager
-                </span>
-              )}
-            
-              {/* Employee Image */}
-              <div className="flex justify-center">
-                <img
-                  src={employee.image || "https://via.placeholder.com/150"}
-                  alt={employee.name}
-                  className="w-24 h-24 object-cover rounded-full border-4 border-gray-300 shadow-md"
-                />
+        <div className="space-y-8">
+          {Object.entries(
+            filteredEmployees.reduce((acc, employee) => {
+              if (!acc[employee.department]) acc[employee.department] = [];
+              acc[employee.department].push(employee);
+              return acc;
+            }, {})
+          ).map(([department, employees]) => (
+            <div key={department} className="space-y-4">
+              {/* Department Heading */}
+              <h2 className="inline-block px-6 py-3 text-2xl font-bold text-white bg-gradient-to-r from-red-300 via-blue-500 to-teal-300 rounded-full shadow-md shadow-indigo-300/50">
+                {department}
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {employees.map((employee) => (
+                  <div
+                    key={employee._id}
+                    className="relative bg-white border border-gray-200 rounded-xl shadow-lg p-4 hover:shadow-xl transition-shadow duration-300"
+                    onClick={() => handleRowClick(employee)} // Open the modal on card click
+                  >
+                    {/* Manager Badge */}
+                    {employee.position.toLowerCase() === "project manager" && (
+                      <span className="absolute top-3 right-3 bg-blue-600 text-white text-sm font-semibold px-3 py-1 rounded-full">
+                        Manager
+                      </span>
+                    )}
+
+                    {/* Employee Image */}
+                    <div className="flex justify-center">
+                      <img
+                        src={
+                          employee.image || "https://via.placeholder.com/150"
+                        }
+                        alt={`Profile picture of ${employee.name}`}
+                        className="w-24 h-24 object-cover rounded-full border-4 border-gray-300 shadow-md"
+                      />
+                    </div>
+
+                    {/* Employee Name */}
+                    <h3 className="text-center text-2xl font-bold text-gray-800 mt-4">
+                      {employee.name}
+                    </h3>
+
+                    {/* Employee Position */}
+                    <p className="text-center text-lg font-medium text-pink-500 mb-4">
+                      {employee.position}
+                    </p>
+
+                    {/* Employee Details */}
+                    <div className="text-gray-700 space-y-2 text-center">
+                      <p>
+                        <strong>Phone:</strong> {employee.phone}
+                      </p>
+                      <p>
+                        <strong>City:</strong> {employee.city}
+                      </p>
+                      <p>
+                        <strong>Country:</strong> {employee.country}
+                      </p>
+                    </div>
+
+                    {/* Delete Button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent the modal from opening
+                        handleDelete(employee._id);
+                      }}
+                      className="w-full mt-4 bg-red-500 text-white font-semibold py-2 rounded-lg hover:bg-red-600 transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
               </div>
-            
-              {/* Employee Name */}
-              <h3 className="text-center text-2xl font-bold text-gray-800 mt-4">
-                {employee.name}
-              </h3>
-            
-              {/* Employee Position */}
-              <p className="text-center text-lg font-medium text-pink-500 mb-4">
-                {employee.position}
-              </p>
-            
-              {/* Employee Details */}
-              <div className="text-gray-700 space-y-2 text-center">
-                <p>
-                  <strong>Phone:</strong> {employee.phone}
-                </p>
-                <p>
-                  <strong>Department:</strong> {employee.department}
-                </p>
-                <p>
-                  <strong>City:</strong> {employee.city}
-                </p>
-                <p>
-                  <strong>Country:</strong> {employee.country}
-                </p>
-              </div>
-            
-              {/* Delete Button */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent the modal from opening
-                  handleDelete(employee._id);
-                }}
-                className="w-full mt-4 bg-red-500 text-white font-semibold py-2 rounded-lg hover:bg-red-600 transition-colors"
-              >
-                Delete
-              </button>
             </div>
-            
-            ))
-          ) : (
-            <div className="col-span-full text-center p-6 text-lg text-gray-500">
-              No employees found
-            </div>
-          )}
+          ))}
         </div>
 
         {/* Modal */}
@@ -348,14 +365,32 @@ function EmployeeTable() {
                   <label className="block text-gray-700 font-bold mb-2">
                     Position
                   </label>
-                  <input
-                    type="text"
+                  <select
                     name="position"
                     value={formData.position}
                     onChange={handleFormChange}
                     className="w-full border px-3 py-2 rounded"
-                  />
+                  >
+                    <option value="" disabled>
+                      Select Position
+                    </option>
+                    {[
+                      "Software Engineer",
+                      "Project Manager",
+                      "Data Analyst",
+                      "UI/UX Designer",
+                      "Marketing Specialist",
+                      "Security Specialist",
+                      "Flutter Developer",
+                      "Web Developer",
+                    ].map((position) => (
+                      <option key={position} value={position}>
+                        {position}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+
                 <div className="mb-4">
                   <label className="block text-gray-700 font-bold mb-2">
                     Salary
@@ -384,14 +419,26 @@ function EmployeeTable() {
                   <label className="block text-gray-700 font-bold mb-2">
                     Department
                   </label>
-                  <input
-                    type="text"
+                  <select
                     name="department"
                     value={formData.department}
                     onChange={handleFormChange}
                     className="w-full border px-3 py-2 rounded"
-                  />
+                  >
+                    <option value="" disabled>
+                      Select a Department
+                    </option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Mobile Development">
+                      Mobile Development
+                    </option>
+                    <option value="Design/UI/UX">Design/UI/UX</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Data Analytics">Data Analytics</option>
+                    <option value="Security">Security</option>
+                  </select>
                 </div>
+
                 <div className="mb-4">
                   <label className="block text-gray-700 font-bold mb-2">
                     City

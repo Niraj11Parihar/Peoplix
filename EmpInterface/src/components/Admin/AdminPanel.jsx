@@ -11,6 +11,7 @@ function AdminPanel() {
   const [attendancePercentage, setAttendancePercentage] = useState(0);
   const [attendancePerformance, setAttendancePerformance] = useState("");
   const [liveProjectsCount, setLiveProjectsCount] = useState(0);
+  const [TotalEmp, setTotalEmp] = useState(0);
 
   useEffect(() => {
     const fetchAttendanceData = async () => {
@@ -27,6 +28,18 @@ function AdminPanel() {
         const records = response.data;
         setAttendanceData(records);
         calculateAttendancePerformance(records);
+
+        // total employee length
+        const EmpLength = await axios.get(
+          "http://localhost:8011/Emp/getAllEmployees",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setTotalEmp(EmpLength.data.length);
       } catch (error) {
         console.error("Error fetching attendance data:", error);
       }
@@ -93,14 +106,14 @@ function AdminPanel() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Salary Box */}
           <div className="bg-gradient-to-br from-teal-500 to-cyan-500 shadow-lg rounded-lg p-4 text-center transform transition-transform duration-300 hover:scale-105">
-            <h2 className="text-xl font-semibold text-white">Salary</h2>
-            <p className="text-white text-lg mt-2">$25,000</p>
+            <h2 className="text-2xl font-bold text-white">Total Employees</h2>
+            <p className="text-white  text-xl mt-2">{TotalEmp}</p>
           </div>
 
           {/* Attendance Box */}
           <div className="bg-gradient-to-br from-orange-500 to-yellow-500 shadow-lg rounded-lg p-4 text-center transform transition-transform duration-300 hover:scale-105">
-            <h2 className="text-xl font-semibold text-white">Attendance</h2>
-            <p className="text-white text-lg mt-2">
+            <h2 className="text-2xl font-bold text-white">Attendance</h2>
+            <p className="text-white  text-xl mt-2">
               {attendancePercentage}% Present
             </p>
             <p className="text-white text-sm mt-1">
@@ -110,30 +123,37 @@ function AdminPanel() {
 
           {/* Leaves Box */}
           <div className="bg-gradient-to-br from-red-500 to-pink-500 shadow-lg rounded-lg p-4 text-center transform transition-transform duration-300 hover:scale-105">
-            <h2 className="text-xl font-semibold text-white">Leaves</h2>
-            <p className="text-white text-lg mt-2">3 Days</p>
+            <h2 className="text-2xl font-bold text-white">Leaves</h2>
+            <p className="text-white  text-xl mt-2">3 Days</p>
           </div>
 
           {/* Projects Box */}
           <div className="bg-gradient-to-br from-blue-500 to-indigo-500 shadow-lg rounded-lg p-4 text-center transform transition-transform duration-300 hover:scale-105">
-            <h2 className="text-xl font-semibold text-white">Projects</h2>
-            <p className="text-white text-lg mt-2">{liveProjectsCount} Live</p>
+            <h2 className="text-2xl font-bold text-white">Projects</h2>
+            <p className="text-white  text-xl mt-2">{liveProjectsCount} Live</p>
           </div>
         </div>
 
         {/* Main Dashboard Content */}
-        <div className="bg-white shadow-md rounded-lg mt-8 p-6 transform transition-transform duration-300 hover:scale-101">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-            Employee Management
+        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 shadow-lg rounded-lg mt-8 p-4 transform transition-transform duration-300 hover:scale-95 hover:shadow-2xl">
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Peoplix
           </h2>
-          <p className="text-gray-600">
-            Manage all aspects of your employee data, including salary,
-            attendance, leaves, and more. Explore detailed statistics and
-            insights.
+          <p className="text-white text-opacity-90">
+            Peoplix is a powerful employee management platform designed to
+            streamline and enhance workplace operations. It offers a
+            comprehensive suite of tools to manage employee data, monitor
+            attendance and track leaves. With
+            Peoplix, businesses can easily maintain detailed employee records,
+            ensure compliance, and generate actionable insights through advanced
+            analytics.
           </p>
+          <button className="mt-6 px-6 py-3 bg-white text-blue-600 font-medium rounded-md shadow-md transition-transform transform hover:-translate-y-1 hover:scale-105">
+            Learn More
+          </button>
         </div>
 
-        <div className="lg:flex  mt-8 gap-6">
+        <div className="lg:flex  mt-4 gap-6">
           {/* Chart of Task Frequency */}
           <div className="w-full   lg:w-1/2 ">
             <TaskFrequencyChart />
@@ -142,10 +162,10 @@ function AdminPanel() {
           {/* Employee Stream Pie Chart */}
           <div className="mt-8 w-full lg:w-1/2 lg:m-0">
             {/* Project work overview /> */}
-            <ProjectTaskTable/>
+            <ProjectTaskTable />
           </div>
         </div>
-        
+
         <div className="lg:flex  mt-8 gap-6">
           {/* Recently Joined Employees Table */}
           <div className="w-full">
