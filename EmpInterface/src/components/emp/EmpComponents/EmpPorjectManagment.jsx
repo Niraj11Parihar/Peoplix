@@ -33,18 +33,20 @@ const EmpProjectManagement = () => {
 
   return (
     <EmpLayout>
-      <div className="flex flex-col lg:flex-row items-start lg:items-center h-full w-full p-6 space-y-6 lg:space-y-0 lg:space-x-6">
+      <div className="flex flex-col lg:flex-row justify-between gap-6 p-6">
         {/* Assigned Projects Section */}
-        <AssignedProjectsList projects={projects} error={error} />
-        
+        <div className="w-full lg:w-1/2">
+          <AssignedProjectsList projects={projects} error={error} />
+        </div>
+
         {/* Task Assignment Form */}
-        <div className="bg-gray-500 bg-opacity-15 p-5 shadow-md rounded-lg w-full lg:w-2/3">
+        <div className="w-full">
           <TaskAssigningForm projects={projects} />
         </div>
       </div>
 
       {/* Assigned Tasks Section */}
-      <div className="bg-gray-500 bg-opacity-15 p-5 shadow-md rounded-lg w-full lg:mt-0">
+      <div className="p-5 lg:mt-0">
         <AssignedTaskList />
       </div>
     </EmpLayout>

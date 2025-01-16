@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { Calendar, User2, Briefcase, Building2 } from 'lucide-react';
 
 const AssignedProjectsList = ({ projects, error }) => {
   const [userPosition, setUserPosition] = useState("");
 
-  // Fetch user position and projects
   const fetchData = useCallback(async () => {
     try {
       const token = localStorage.getItem("authToken");
@@ -13,18 +13,11 @@ const AssignedProjectsList = ({ projects, error }) => {
         return;
       }
 
-      // Fetch user position (e.g., projectManager, employee, etc.)
       const userResponse = await axios.get(
         "http://localhost:8011/Emp/getEmployees", 
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setUserPosition(userResponse.data.position); // Assume position is available in user data
-      // // Fetch projects
-      // const response = await axios.get(
-      //   "http://localhost:8082/Projects/getProjects",
-      //   { headers: { Authorization: `Bearer ${token}` } }
-      // );
-      // setProjects(response.data.projects);
+      setUserPosition(userResponse.data.position);
     } catch (err) {
       setError("Error fetching data.");
     }
@@ -34,45 +27,100 @@ const AssignedProjectsList = ({ projects, error }) => {
     fetchData();
   }, [fetchData]);
 
-  // Conditionally render the project list based on the user position
   if (userPosition !== "Project Manager") {
-    return null; // Hide the component if not a project manager
+    return null;
   }
 
+  const getStatusStyles = (status) => {
+    switch (status) {
+      case 'Complete':
+        return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+      case 'In Progress':
+        return 'bg-amber-50 text-amber-700 border border-amber-200';
+      default:
+        return 'bg-red-50 text-red-700 border border-red-200';
+    }
+  };
+
   return (
-    <div className="bg-gray-500 bg-opacity-15 p-5 shadow-md rounded-lg w-full lg:w-1/3 h-[60vh] lg:h-[75vh] overflow-y-auto">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Assigned Projects</h1>
-      {error && <p className="text-red-500 font-medium mb-4">{error}</p>}
-      <div className="w-full max-w-4xl overflow-y-auto p-4">
+    <div className="bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-8 rounded-2xl shadow-lg h-[60vh] lg:h-[70vh] overflow-hidden border border-indigo-100/50">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+            Assigned Projects
+          </h1>
+          <p className="text-gray-500">Manage and track your project portfolio</p>
+        </div>
+        <div className="bg-indigo-50 px-6 py-2 rounded-xl border border-indigo-100">
+          <span className="text-indigo-600 font-medium">{projects.length} Projects</span>
+        </div>
+      </div>
+
+      {error && (
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-xl">
+          <p className="text-red-700 font-medium">{error}</p>
+        </div>
+      )}
+
+      <div className="overflow-y-auto h-[calc(100%-7rem)] pr-4 -mr-4 scrollbar-thin scrollbar-thumb-indigo-200 scrollbar-track-transparent">
         {projects.length === 0 ? (
-          <p className="text-center text-gray-600">No projects assigned to you.</p>
+          <div className="flex flex-col items-center justify-center h-full text-center py-12 bg-white/50 rounded-xl border border-indigo-100">
+            <Briefcase className="w-16 h-16 text-indigo-300 mb-4" />
+            <p className="text-indigo-900 text-lg font-medium">No projects assigned to you.</p>
+            <p className="text-indigo-500">New projects will appear here when assigned.</p>
+          </div>
         ) : (
-          <ul className="space-y-4">
+          <div className="grid gap-6">
             {projects.map((project) => (
-              <li
+              <div
                 key={project._id}
-                className="p-4 border border-gray-200 rounded-lg shadow-sm bg-gray-50 hover:shadow-lg transition-shadow"
+                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-indigo-100 group"
               >
-                <h2 className="text-xl text-center border-b border-gray-300 font-semibold text-gray-700">
-                  {project.projectName}
-                </h2>
-                <p className="text-gray-600">
-                  <strong>Client:</strong> {project.clientName}
-                </p>
-                <p className="text-gray-600">
-                  <strong>Start Date:</strong>{" "}
-                  {new Date(project.startDate).toLocaleDateString()}
-                </p>
-                <p className="text-gray-600">
-                  <strong>End Date:</strong>{" "}
-                  {new Date(project.endDate).toLocaleDateString()}
-                </p>
-                <p className="text-gray-600">
-                  <strong>Project Head:</strong> {project.projectHead}
-                </p>
-              </li>
+                <div className="flex items-start justify-between mb-4">
+                  <h2 className="text-xl font-semibold text-gray-800 group-hover:text-indigo-600 transition-colors">
+                    {project.projectName}
+                  </h2>
+                  <span className={`px-4 py-1 text-sm font-medium rounded-full ${getStatusStyles(project.Projectstatus)}`}>
+                    {project.Projectstatus}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex items-center gap-3 group-hover:bg-indigo-50/50 p-3 rounded-lg transition-colors">
+                    <Building2 className="w-5 h-5 text-indigo-400" />
+                    <div>
+                      <p className="text-sm text-indigo-500">Client</p>
+                      <p className="text-gray-700 font-medium">{project.clientName}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 group-hover:bg-indigo-50/50 p-3 rounded-lg transition-colors">
+                    <User2 className="w-5 h-5 text-indigo-400" />
+                    <div>
+                      <p className="text-sm text-indigo-500">Project Head</p>
+                      <p className="text-gray-700 font-medium">{project.projectHead}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 group-hover:bg-indigo-50/50 p-3 rounded-lg transition-colors">
+                    <Calendar className="w-5 h-5 text-indigo-400" />
+                    <div>
+                      <p className="text-sm text-indigo-500">Start Date</p>
+                      <p className="text-gray-700">{new Date(project.startDate).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 group-hover:bg-indigo-50/50 p-3 rounded-lg transition-colors">
+                    <Calendar className="w-5 h-5 text-indigo-400" />
+                    <div>
+                      <p className="text-sm text-indigo-500">End Date</p>
+                      <p className="text-gray-700">{new Date(project.endDate).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>

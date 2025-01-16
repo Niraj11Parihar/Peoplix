@@ -1,17 +1,25 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
+import { 
+  ClipboardList, 
+  AlertCircle, 
+  Loader2, 
+  Calendar,
+  User2,
+  Briefcase,
+  CheckCircle2
+} from 'lucide-react';
 
 const TaskTable = () => {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [Userposition, setUserposition] = useState(""); // State to store user role
+  const [Userposition, setUserposition] = useState("");
 
   const fetchTasks = useCallback(async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
-      // Fetch user role and tasks in a single API request or separate API endpoints
       const response = await axios.get(
         "http://localhost:8011/TaskManager/getTasks",
         {
@@ -19,9 +27,9 @@ const TaskTable = () => {
         }
       );
 
-      const { tasks} = response.data; // Assuming API sends back role and tasks
+      const { tasks } = response.data;
       setTasks(tasks);
-      setUserposition(response.data.user.position); // Set user role (employee, project manager, admin)
+      setUserposition(response.data.user.position);
       setError(null);
     } catch (err) {
       setError("Error fetching tasks.");
@@ -34,103 +42,151 @@ const TaskTable = () => {
     fetchTasks();
   }, [fetchTasks]);
 
+  const getStatusStyle = (status) => {
+    const styles = {
+      'Completed': 'bg-emerald-100 text-emerald-700 border-emerald-200',
+      'InProgress': 'bg-amber-100 text-amber-700 border-amber-200',
+      'Not Started': 'bg-rose-100 text-rose-700 border-rose-200'
+    };
+    return `${styles[status] || styles.default} px-3 py-1 rounded-full text-sm font-medium border`;
+  };
+
   return (
-    <div className="p-6 bg-gray-50 rounded-lg">
-      {/* Page Header */}
-      <h1 className="text-3xl font-extrabold text-center text-blue-700 mb-8">
-        Task Management System
-      </h1>
-
-      {/* Loading State */}
-      {loading && (
-        <div className="text-center text-blue-600 font-medium animate-pulse">
-          Loading tasks...
+    <div className="bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-8 rounded-2xl shadow-xl">
+      {/* Header Section */}
+      <div className="mx-auto mb-8">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3 mb-2">
+              <ClipboardList className="w-8 h-8 text-indigo-600" />
+              Task Management System
+            </h1>
+            <p className="text-gray-500">Track and manage all tasks in one place</p>
+          </div>
+          <div className="bg-indigo-100 px-4 py-2 rounded-full">
+            <span className="text-indigo-600 font-medium">{tasks.length} Tasks</span>
+          </div>
         </div>
-      )}
 
-      {/* Error State */}
-      {error && (
-        <div className="text-center text-red-600 font-semibold bg-red-100 p-4 rounded-lg shadow">
-          {error}
-        </div>
-      )}
+        {/* Loading State */}
+        {loading && (
+          <div className="flex items-center justify-center gap-3 p-8 bg-white rounded-xl shadow-sm">
+            <Loader2 className="w-6 h-6 text-indigo-600 animate-spin" />
+            <span className="text-indigo-600 font-medium">Loading tasks...</span>
+          </div>
+        )}
 
-      {/* Task Table */}
-      {!loading && !error && tasks.length > 0 && (
-        <div className="overflow-x-auto bg-white shadow-md rounded-lg mb-8">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gradient-to-r from-blue-500 to-orange-300 text-white text-left">
-                <th className="px-6 py-4">Task Name</th>
-                <th className="px-6 py-4">Project Name</th>
-                <th className="px-6 py-4">Project Head</th>
-                <th className="px-6 py-4">Employee Name</th>
-                <th className="px-6 py-4">Status</th>
-                {/* Conditionally render columns based on user role */}
-                {Userposition === "Project Manager" ? (
-                  <>
-                    <th className="px-6 py-4">Start Date</th>
-                    <th className="px-6 py-4">End Date</th>
-                  </>
-                ) : (
-                  <th className="px-6 py-4">Deadline</th>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {tasks.map((task, index) => (
-                <tr
-                  key={index}
-                  className={`text-gray-800 text-sm hover:bg-blue-100 ${
-                    index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"
-                  }`}
-                >
-                  <td className="px-6 py-4 font-semibold">{task.taskName || "N/A"}</td>
-                  <td className="px-6 py-4 font-semibold">{task.projectName || "N/A"}</td>
-                  <td className="px-6 py-4 font-semibold">{task.projectHead || "N/A"}</td>
-                  <td className="px-6 py-4 font-semibold">
-                    {Userposition === "Project Manager" ? "N/A" : task.employeeName || "N/A"}
-                  </td>
-                  <td
-                    className={`px-6 py-4 font-semibold ${
-                      task.status === "Completed"
-                        ? "text-green-600"
-                        : task.status === "In Progress"
-                        ? "text-yellow-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {task.status || "N/A"}
-                  </td>
+        {/* Error State */}
+        {error && (
+          <div className="flex items-center gap-3 p-6 bg-red-50 border-l-4 border-red-500 rounded-r-xl">
+            <AlertCircle className="w-6 h-6 text-red-500" />
+            <p className="text-red-700 font-medium">{error}</p>
+          </div>
+        )}
 
-                  {/* Conditionally render Start Date, End Date or Deadline */}
-                  {Userposition === "Project Manager" ? (
-                    <>
-                      <td className="px-6 py-4 font-semibold">
-                        {task.startDate ? new Date(task.startDate).toLocaleDateString() : "N/A"}
+        {/* Task Table */}
+        {!loading && !error && tasks.length > 0 && (
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                    <th className="px-6 py-4 font-semibold">Task Name</th>
+                    <th className="px-6 py-4 font-semibold">Project Name</th>
+                    <th className="px-6 py-4 font-semibold">Project Head</th>
+                    <th className="px-6 py-4 font-semibold">Employee Name</th>
+                    <th className="px-6 py-4 font-semibold">Status</th>
+                    {Userposition === "Project Manager" ? (
+                      <>
+                        <th className="px-6 py-4 font-semibold">Start Date</th>
+                        <th className="px-6 py-4 font-semibold">End Date</th>
+                      </>
+                    ) : (
+                      <th className="px-6 py-4 font-semibold">Deadline</th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {tasks.map((task, index) => (
+                    <tr
+                      key={index}
+                      className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-200"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <Briefcase className="w-4 h-4 text-indigo-400" />
+                          <span className="font-small text-gray-800">{task.taskName || "N/A"}</span>
+                        </div>
                       </td>
-                      <td className="px-6 py-4 font-semibold">
-                        {task.endDate ? new Date(task.endDate).toLocaleDateString() : "N/A"}
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-indigo-400" />
+                          <span className="text-gray-700">{task.projectName || "N/A"}</span>
+                        </div>
                       </td>
-                    </>
-                  ) : (
-                    <td className="px-6 py-4 font-semibold">
-                      {task.deadline ? new Date(task.deadline).toLocaleDateString() : "N/A"}
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <User2 className="w-4 h-4 text-indigo-400" />
+                          <span className="text-gray-700">{task.projectHead || "N/A"}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <User2 className="w-4 h-4 text-indigo-400" />
+                          <span className="text-gray-700">{task.employeeName}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={getStatusStyle(task.status)}>
+                          {task.status || "Not Started"}
+                        </span>
+                      </td>
+                      {Userposition === "Project Manager" ? (
+                        <>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              <Calendar className="w-4 h-4 text-indigo-400" />
+                              <span className="text-gray-700">
+                                {task.startDate ? new Date(task.startDate).toLocaleDateString() : "N/A"}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              <Calendar className="w-4 h-4 text-indigo-400" />
+                              <span className="text-gray-700">
+                                {task.endDate ? new Date(task.endDate).toLocaleDateString() : "N/A"}
+                              </span>
+                            </div>
+                          </td>
+                        </>
+                      ) : (
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-indigo-400" />
+                            <span className="text-gray-700">
+                              {task.deadline ? new Date(task.deadline).toLocaleDateString() : "N/A"}
+                            </span>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
-      {/* No Tasks Found */}
-      {!loading && !error && tasks.length === 0 && (
-        <div className="text-center text-gray-600 font-medium mt-6">
-          No tasks found.
-        </div>
-      )}
+        {/* Empty State */}
+        {!loading && !error && tasks.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-16 bg-white rounded-xl shadow-sm">
+            <ClipboardList className="w-16 h-16 text-gray-300 mb-4" />
+            <p className="text-gray-600 text-lg">No tasks found</p>
+            <p className="text-gray-400">Tasks will appear here once they are assigned</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
